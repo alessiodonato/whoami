@@ -1,0 +1,33 @@
+---
+/** Layer 2: Calabria across the water. Longer with every stop. Decorative. */
+import { coastLights, ridgePath } from '../lib/scene.ts';
+
+interface Props {
+  stops: number;
+}
+
+const { stops } = Astro.props;
+const far = ridgePath(38, { peaks: 5 + Math.round(stops * 0.7), low: 0.3, high: 0.62, massif: 0.34 });
+const near = ridgePath(15, { peaks: 9 + Math.round(stops * 1.3), low: 0.16, high: 0.44 });
+const lights = coastLights(1783, 70 + stops * 8);
+---
+
+<div class="coast" id="coast" aria-hidden="true">
+  <svg class="coast__ridges" viewBox="0 0 1000 100" preserveAspectRatio="none" focusable="false">
+    <path class="coast__far" d={far}></path>
+    <path class="coast__near" d={near}></path>
+    <g class="coast__lights">
+      {lights.map((dot) => <rect x={dot.x.toFixed(1)} y={dot.y.toFixed(1)} width={dot.w.toFixed(1)} height={dot.h} />)}
+    </g>
+  </svg>
+
+  {/* Fata Morgana: the same hills, upside down, hanging over themselves. Shown once the secret is out. */}
+  <svg class="coast__mirage" viewBox="0 0 1000 100" preserveAspectRatio="none" focusable="false">
+    <path d={near}></path>
+  </svg>
+
+  {/* The twin of the Pilone, on the Calabrian side. */}
+  <svg class="coast__pylon" viewBox="0 0 40 120" focusable="false">
+    <path d="M6 120 L17 22 M34 120 L23 22 M17 22 H23 M20 22 V2 M8 30 H32 M11 44 H29 M10 80 L30 100 M30 80 L10 100 M13 56 L27 76 M27 56 L13 76"></path>
+  </svg>
+</div>

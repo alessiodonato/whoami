@@ -1,0 +1,203 @@
+---
+/**
+ * The one-page CV: the public one. Built from the same journey.ts as the walk,
+ * so it cannot say anything different. No phone number here, and no full CV:
+ * those are on request (see `onRequest` in journey.ts).
+ */
+import '../styles/tokens.css';
+import '../styles/cv.css';
+
+import Text from '../components/Text.astro';
+import { contacts, inShort, journey, onRequest, profile } from '../data/journey.ts';
+import { FONT_FILES, fontFaces } from '../lib/fonts.ts';
+import { isTodo } from '../lib/todos.ts';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// A milestone with dates is a job (newest first); one without is listed at the end.
+const jobs = journey.filter((stop) => stop.type === 'milestone' && stop.year !== undefined).reverse();
+const also = journey.filter((stop) => stop.type === 'milestone' && stop.year === undefined);
+const projects = journey.filter((stop) => stop.type === 'project');
+
+const paragraphs = (body?: string) => (body ? body.split(/\n\s*\n/).map((text) => text.trim()) : []);
+const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/+$/, '');
+const LINK_NAMES = { github: 'GitHub', npm: 'npm', demo: 'Demo', site: 'Website' } as const;
+const linksOf = (links: Record<string, string | undefined> = {}) =>
+  (Object.keys(LINK_NAMES) as (keyof typeof LINK_NAMES)[])
+    .filter((key) => links[key] && !isTodo(links[key]))
+    .map((key) => ({ name: LINK_NAMES[key], url: links[key] as string }));
+
+const reach = Object.entries(contacts as Record<string, string>)
+  .filter(([, value]) => value && !isTodo(value))
+  .map(([key, value]) =>
+    key === 'email' ? { href: `mailto:${value}`, text: value, newTab: false } : { href: value, text: bare(value), newTab: true },
+  );
+
+const email = contacts.email && !isTodo(contacts.email) ? contacts.email : null;
+const title = `${profile.name}, ${profile.role}: CV`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={profile.summary} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={profile.summary} />
+    <meta name="theme-color" content="#8f94cc" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    {FONT_FILES.map((file) => <link rel="preload" href={`${base}/fonts/${file}`} as="font" type="font/woff2" crossorigin />)}
+    <style is:inline set:html={fontFaces(base)}></style>
+  </head>
+  <body class="cv">
+    <div class="cv__sky" aria-hidden="true"></div>
+
+    <nav class="cv__bar" aria-label="Page">
+      <a href={`${base}/`}>Back to the walk</a>
+      <button type="button" id="print" hidden>Print or save as PDF</button>
+    </nav>
+
+    <main class="cv__sheet">
+      <header class="cv__head">
+        <h1><Text value={profile.name} /></h1>
+        <p class="cv__role"><Text value={profile.role} />. <Text value={profile.place} />.</p>
+        <ul class="cv__reach">
+          {
+            reach.map((item) => (
+              <li>
+                <a href={item.href} target={item.newTab ? '_blank' : undefined} rel={item.newTab ? 'noopener' : undefined}>
+                  {item.text}
+                  {item.newTab && <span class="sr-only"> (opens in a new tab)</span>}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </header>
+
+      <p class="cv__summary"><Text value={profile.summary} /></p>
+
+      <section aria-labelledby="cv-experience">
+        <h2 id="cv-experience">Experience</h2>
+        {
+          jobs.map((job) => (
+            <article class="cv__item">
+              <div class="cv__line">
+                <h3>
+                  <Text value={job.title} />
+                </h3>
+                <p class="cv__when">
+                  <Text value={String(job.year)} />
+                </p>
+              </div>
+              <p class="cv__lead">
+                <Text value={job.pitch} />
+              </p>
+              {paragraphs(job.body).map((text) => (
+                <p>
+                  <Text value={text} />
+                </p>
+              ))}
+              {job.stack && job.stack.length > 0 && <p class="cv__stack">{job.stack.join(', ')}</p>}
+            </article>
+          ))
+        }
+      </section>
+
+      <section aria-labelledby="cv-short">
+        <h2 id="cv-short">In short</h2>
+        <dl class="cv__rows">
+          {
+            inShort.map((row) => (
+              <div>
+                <dt>
+                  <Text value={row.name} />
+                </dt>
+                <dd>
+                  <Text value={row.value} />
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <section aria-labelledby="cv-open">
+        <h2 id="cv-open">Open source</h2>
+        {
+          projects.map((project) => (
+            <article class="cv__item">
+              <div class="cv__line">
+                <h3>
+                  <Text value={project.title} />
+                </h3>
+                {project.status && <p class="cv__when">{project.status}</p>}
+              </div>
+              <p>
+                <Text value={project.pitch} />
+                {linksOf(project.links).map((link) => (
+                  <>
+                    {' '}
+                    <a href={link.url} target="_blank" rel="noopener">
+                      {link.name}
+                      <span class="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </>
+                ))}
+              </p>
+            </article>
+          ))
+        }
+      </section>
+
+      {
+        also.length > 0 && (
+          <section aria-labelledby="cv-also">
+            <h2 id="cv-also">Also</h2>
+            {also.map((item) => (
+              <article class="cv__item">
+                <div class="cv__line">
+                  <h3>
+                    <Text value={item.title} />
+                  </h3>
+                </div>
+                <p>
+                  <Text value={item.pitch} />
+                  {linksOf(item.links).map((link) => (
+                    <>
+                      {' '}
+                      <a href={link.url} target="_blank" rel="noopener">
+                      {link.name}
+                      <span class="sr-only"> (opens in a new tab)</span>
+                    </a>
+                    </>
+                  ))}
+                </p>
+              </article>
+            ))}
+          </section>
+        )
+      }
+
+      {
+        onRequest.length > 0 && (
+          <p class="cv__locked">
+            {onRequest.join(' and ')}: on request. {email ? <a href={`mailto:${email}?subject=${encodeURIComponent('More information')}`}>Contact me</a> : 'Contact me'} for more
+            information.
+          </p>
+        )
+      }
+    </main>
+
+    <script>
+      // The button only makes sense where there is a script to press it.
+      const button = document.querySelector<HTMLButtonElement>('#print');
+      if (button) {
+        button.hidden = false;
+        button.addEventListener('click', () => window.print());
+      }
+    </script>
+  </body>
+</html>

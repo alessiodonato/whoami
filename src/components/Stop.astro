@@ -1,0 +1,115 @@
+---
+/**
+ * One stop of the walk. Everything a visitor needs is in this markup at build time:
+ * the script only adds the button that opens the panel.
+ */
+import type { Stop } from '../data/journey.ts';
+import { artFor, greeneryFor } from '../lib/scene.ts';
+import { isTodo } from '../lib/todos.ts';
+import Greenery from './Greenery.astro';
+import StopArt from './StopArt.astro';
+import Text from './Text.astro';
+
+interface Props {
+  stop: Stop;
+}
+
+const { stop } = Astro.props;
+const kind = artFor(stop);
+
+const TYPE_NAMES = { milestone: 'Milestone', project: 'Project', secret: 'Mirage' } as const;
+const LINK_NAMES = { github: 'GitHub', npm: 'npm', demo: 'Demo', site: 'Website' } as const;
+const STATUS_NAMES = { stable: 'stable', beta: 'beta', wip: 'work in progress' } as const;
+
+const links = (Object.keys(LINK_NAMES) as (keyof typeof LINK_NAMES)[])
+  .filter((key) => stop.links?.[key])
+  .map((key) => ({ key, name: LINK_NAMES[key], url: stop.links![key]! }));
+
+const paragraphs = stop.body ? stop.body.split(/\n\s*\n/).map((text) => text.trim()) : [];
+const hasMore = paragraphs.length > 0 || (stop.stack?.length ?? 0) > 0;
+---
+
+<li
+  class:list={['stop', `stop--${stop.type}`, `stop--${kind}`]}
+  id={stop.id}
+  data-stop
+  data-type={stop.type}
+  data-title={stop.title}
+>
+  <div class="stop__green"><Greenery kind={stop.type === 'secret' ? 'none' : greeneryFor(stop)} /></div>
+  <div class="stop__art">
+    <StopArt kind={kind} />
+    {stop.type === 'secret' && <div class="stop__echo"><StopArt kind={kind} /></div>}
+  </div>
+
+  <article class="plate" aria-labelledby={`${stop.id}-title`}>
+    <div class="plate__head">
+      {
+        stop.year !== undefined && (
+          <p class="plate__year">
+            <span class="sr-only">When: </span>
+            <Text value={String(stop.year)} />
+          </p>
+        )
+      }
+      <h2 class="plate__title" id={`${stop.id}-title`}>
+        <span class="sr-only">{TYPE_NAMES[stop.type]}: </span><span data-title-text>{stop.title}</span>
+      </h2>
+      {
+        stop.status && (
+          <p class={`status status--${stop.status}`}>
+            <span class="sr-only">Status: </span>
+            {STATUS_NAMES[stop.status]}
+          </p>
+        )
+      }
+    </div>
+
+    <p class="plate__pitch"><Text value={stop.pitch} /></p>
+
+    {
+      hasMore && (
+        <div class="plate__more">
+          {paragraphs.map((text) => (
+            <p>
+              <Text value={text} />
+            </p>
+          ))}
+          {stop.stack && stop.stack.length > 0 && (
+            <div class="stack">
+              <h3 class="stack__title">Built with</h3>
+              <ul class="stack__list">
+                {stop.stack.map((item) => (
+                  <li>
+                    <Text value={item} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    {
+      links.length > 0 && (
+        <div class="plate__foot">
+          <ul class="plate__links">
+            {links.map((link) => (
+              <li>
+                {isTodo(link.url) ? (
+                  <Text value={`${link.name}: TODO`} />
+                ) : (
+                  <a href={link.url} data-link={link.key} target="_blank" rel="noopener">
+                    {link.name}
+                    <span class="sr-only"> of {stop.title} (opens in a new tab)</span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </article>
+</li>

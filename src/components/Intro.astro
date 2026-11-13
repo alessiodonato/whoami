@@ -1,0 +1,64 @@
+---
+/** The opening screen: Capo Peloro at dawn, under the Pilone. */
+import { profile } from '../data/journey.ts';
+import Text from './Text.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<header class="intro" id="top">
+  <div class="intro__text">
+    <p class="intro__who">
+      <Text value={profile.name} />, <Text value={profile.role} />. <Text value={profile.place} />.
+    </p>
+    <h1 class="intro__title"><Text value={profile.headline} /></h1>
+    <p class="intro__cue intro__cue--top">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 V19 M5 13 L12 20 L19 13"></path></svg>
+      Scroll to walk
+    </p>
+  </div>
+
+  {/*
+    The first sign of the walk. Small text never sits on the sky: it always has a plate under it.
+    Like every other sign it opens in the panel; the <template>s hold what only the panel shows.
+  */}
+  <div class="intro__sign" data-sign data-sign-label={`Details about ${profile.name}`}>
+    <template data-panel-more>
+      <div class="plate__head">
+        <h2 class="plate__title"><Text value={profile.name} /></h2>
+      </div>
+      <p class="plate__pitch"><Text value={profile.role} />. <Text value={profile.place} />.</p>
+    </template>
+    <p class="intro__lead">
+      <Text value={profile.intro} />
+      <span class="intro__carry">{' '}<Text value={profile.carry} /></span>
+    </p>
+    <template data-panel-more>
+      <div class="plate__foot">
+        <ul class="plate__links">
+          <li>
+            <a href={`${base}/cv/`} target="_blank" rel="noopener">One-page CV<span class="sr-only"> (opens in a new tab)</span></a>
+          </li>
+          <li><a href="#pier">Contacts</a></li>
+        </ul>
+      </div>
+    </template>
+    <div class="intro__foot" data-sign-foot>
+      <p class="intro__cue" data-panel-skip>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 V19 M5 13 L12 20 L19 13"></path></svg>
+        Scroll to walk
+      </p>
+    </div>
+  </div>
+
+  {/* Il Pilone di Torre Faro: 232 metres of steel, the landmark of the Strait. */}
+  <svg class="pylon" viewBox="0 0 160 640" aria-hidden="true" focusable="false">
+    <path class="pylon__legs" d="M22 640 L68 96 M138 640 L92 96 M68 96 H92 M72 96 L78 30 M88 96 L82 30 M78 30 H82 M80 30 V4"></path>
+    <path class="pylon__arms" d="M22 110 H138 M30 110 L68 96 M130 110 L92 96 M38 150 H122 M46 150 L66 126 M114 150 L94 126"></path>
+    <path
+      class="pylon__web"
+      d="M64 150 L98 196 M96 150 L62 196 M62 196 H98 M60 196 L102 262 M100 196 L58 262 M56 262 H104 M54 262 L108 344 M106 262 L52 344 M48 344 H112 M46 344 L116 440 M114 344 L44 440 M40 440 H120 M38 440 L124 540 M122 440 L36 540 M30 540 H130 M30 540 L134 640 M130 540 L26 640"
+    ></path>
+    <circle class="pylon__light" cx="80" cy="6" r="5"></circle>
+  </svg>
+</header>

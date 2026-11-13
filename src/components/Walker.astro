@@ -1,0 +1,166 @@
+---
+/**
+ * The little man. He walks while you scroll and stands still when you stop.
+ *
+ * He also shows what the walk leaves on him, the baggage picked up along the way:
+ *   - past one job a robot dog starts trotting behind him, past the next a cog starts circling around him;
+ *   - at the first open source project he gets a backpack, and every project puts something in it;
+ *   - from the first stop on he pulls a suitcase, and the suitcase gets bigger at every stop;
+ *   - at every stop he gets visibly broader, and the gym (one of the mirages) pumps him once more.
+ * Which stop brings what is in CARRY (src/lib/scene.ts); the script (motion.ts) does the rest.
+ * Decorative: nothing here is content.
+ */
+import { journey } from '../data/journey.ts';
+import { CARRY, type Carry } from '../lib/scene.ts';
+
+const from = (kind: Carry) => journey.find((stop) => CARRY[stop.id] === kind)?.id;
+const dogFrom = from('dog');
+const orbitFrom = from('orbit');
+const pumpFrom = from('pump');
+
+// The suitcase turns up at the first stop of the walk and gets bigger at every stop after it.
+const caseFrom = journey.find((stop) => stop.type !== 'secret')?.id;
+
+// The backpack turns up with the first thing that goes into it.
+const PACKED: Carry[] = ['knot', 'fork', 'cross', 'broom'];
+const packFrom = journey.find((stop) => PACKED.includes(CARRY[stop.id]))?.id;
+
+// A small cog with eight flat teeth, centred on 0,0.
+const cog =
+  Array.from({ length: 32 }, (_, i) => {
+    const radius = Math.floor(i / 2) % 2 === 0 ? 7.6 : 5.4;
+    const angle = ((i + 0.5) / 32) * Math.PI * 2;
+    return `${i === 0 ? 'M' : 'L'}${(Math.cos(angle) * radius).toFixed(2)} ${(Math.sin(angle) * radius).toFixed(2)}`;
+  }).join(' ') + ' Z';
+---
+
+<div class="walker" id="walker" aria-hidden="true">
+  <div class="walker__rig">
+    {/* behind him, in this order: the robot dog, then the suitcase he pulls */}
+    <div class="walker__train">
+      {dogFrom && (
+        <svg class="walker__dog" data-carry="dog" data-from={dogFrom} viewBox="0 0 120 80" focusable="false">
+          <g class="d-leg d-leg--far" data-dog="b" data-hip="38 40">
+            <path d="M38 40 L30 56 L36 74" />
+          </g>
+          <g class="d-leg d-leg--far" data-dog="a" data-hip="84 40">
+            <path d="M84 40 L76 56 L82 74" />
+          </g>
+          <g class="d-trunk">
+            <rect class="d-body" x="20" y="24" width="76" height="20" rx="8" />
+            <path class="d-stripe" d="M32 34 H76" />
+            <rect class="d-head" x="90" y="17" width="19" height="16" rx="5" />
+            <circle class="d-eye" cx="103" cy="25" r="2.8" />
+          </g>
+          <g class="d-leg" data-dog="a" data-hip="32 40">
+            <path d="M32 40 L24 56 L30 74" />
+          </g>
+          <g class="d-leg" data-dog="b" data-hip="78 40">
+            <path d="M78 40 L70 56 L76 74" />
+          </g>
+        </svg>
+      )}
+      {
+        caseFrom && (
+          <svg class="walker__case" data-carry="case" data-from={caseFrom} viewBox="0 0 84 104" focusable="false">
+            <path class="c-handle" d="M54 18 V4 H70 V18" />
+            <rect class="c-body" x="6" y="18" width="72" height="72" rx="10" />
+            <path class="c-strap" d="M26 20 V88 M58 20 V88" />
+            <circle class="c-dot" cx="42" cy="40" r="7" />
+            <rect class="c-tag" x="33" y="58" width="18" height="12" rx="2.5" />
+            <circle class="c-wheel" cx="22" cy="96" r="6.5" />
+            <circle class="c-wheel" cx="62" cy="96" r="6.5" />
+          </svg>
+        )
+      }
+    </div>
+
+    {
+      orbitFrom && (
+        <svg class="walker__orbit walker__orbit--back" data-carry="orbit" data-from={orbitFrom} viewBox="0 0 64 128" focusable="false">
+          <g transform="rotate(-14 32 56)">
+            <path class="o-ring" d="M-6 56 A38 11 0 0 1 70 56" />
+            <g class="o-gear" data-orbit="back">
+              <path d={cog} />
+              <circle class="o-hub" r="2.3" />
+            </g>
+          </g>
+        </svg>
+      )
+    }
+
+    <svg class="walker__fig" viewBox="0 0 64 128" focusable="false">
+      {/* the backpack and what the open source projects put in it; it slides out as his back gets wider */}
+      {
+        packFrom && (
+          <g data-part="pack">
+            {from('fork') && (
+              <g class="w-item" data-carry="fork" data-from={from('fork')}>
+                <path class="b-line" d="M10.5 44 V23 M6 11 V19 Q6 23 10.5 23 Q15 23 15 19 V11 M10.5 11 V23" />
+              </g>
+            )}
+            {from('broom') && (
+              <g class="w-item" data-carry="broom" data-from={from('broom')}>
+                <path class="b-line" d="M17.5 44 L20 19" />
+                <path class="b-coral" d="M15.5 19.5 L24.5 20.5 L27 8.5 L15 7 Z" />
+              </g>
+            )}
+            <g class="w-item" data-carry="pack" data-from={packFrom}>
+              <rect class="b-bag" x="5.5" y="42" width="16" height="32" rx="5.5" />
+              <path class="b-line" d="M5.5 52 H21.5" />
+            </g>
+            {from('knot') && (
+              <g class="w-item" data-carry="knot" data-from={from('knot')}>
+                <path class="b-coral" d="M13.5 47 q-7 -5 -8 0 q0 4 8 1 z M13.5 47 q7 -5 8 0 q0 4 -8 1 z" />
+                <circle class="b-coral" cx="13.5" cy="47.4" r="1.9" />
+              </g>
+            )}
+            {from('cross') && (
+              <g class="w-item" data-carry="cross" data-from={from('cross')}>
+                <path class="b-cross" d="M11.5 57.5 h4 v3.5 h3.5 v4 h-3.5 v3.5 h-4 v-3.5 h-3.5 v-4 h3.5 z" />
+              </g>
+            )}
+          </g>
+        )
+      }
+
+      <g class="w-arm" data-limb="arm-back">
+        <path class="w-upper" d="M32 46 V62"></path>
+        <path class="w-fore" d="M32 62 V76"></path>
+      </g>
+      <g class="w-leg" data-limb="leg-back">
+        <path class="w-thigh" d="M32 78 V100"></path>
+        <path class="w-shin" d="M32 100 V121 h9"></path>
+      </g>
+      <path class="w-traps" data-part="traps" d=""></path>
+      <path class="w-body" data-part="torso" d="M21 46 Q21 34 32 34 Q43 34 43 46 L43 82 H21 Z"></path>
+      <g class="w-leg" data-limb="leg-front">
+        <path class="w-thigh" d="M32 78 V100"></path>
+        <path class="w-shin" d="M32 100 V121 h9"></path>
+      </g>
+      <g class="w-arm" data-limb="arm-front">
+        <path class="w-upper" d="M32 46 V62"></path>
+        <path class="w-fore" d="M32 62 V76"></path>
+      </g>
+      <circle class="w-head" cx="32" cy="20" r="11"></circle>
+      <path class="w-hair" d="M20 25 Q17.5 6.5 32 6.5 Q41 6.5 45.5 11.5 Q46.5 14.5 43 17 Q38.5 12.5 32.5 14 Q26.5 15.5 25.5 22 Q25 25.5 22.5 27 Z"></path>
+    </svg>
+
+    {
+      orbitFrom && (
+        <svg class="walker__orbit walker__orbit--front" data-carry="orbit" data-from={orbitFrom} viewBox="0 0 64 128" focusable="false">
+          <g transform="rotate(-14 32 56)">
+            <path class="o-ring" d="M-6 56 A38 11 0 0 0 70 56" />
+            <g class="o-gear" data-orbit="front">
+              <path d={cog} />
+              <circle class="o-hub" r="2.3" />
+            </g>
+          </g>
+        </svg>
+      )
+    }
+
+    {/* nothing to draw for this one: reaching the gym just pumps him up once more */}
+    {pumpFrom && <span data-carry="pump" data-from={pumpFrom} hidden />}
+  </div>
+</div>

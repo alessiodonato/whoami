@@ -1,0 +1,532 @@
+/*
+ * The two scripted layouts. The class is set on <html> before first paint
+ * (see the small script in the page head) and only when motion is welcome:
+ *
+ *   mode-h  wide screens: the stage is pinned and scrolling walks sideways
+ *   mode-v  phones: the path goes down the page over a fixed scene
+ *
+ * With reduced motion, or no script, neither applies and base.css is the page.
+ */
+
+html.mode-h .stop,
+html.mode-v .stop {
+  --lit: 0;
+}
+
+html.mode-h .stop.is-lit,
+html.mode-v .stop.is-lit {
+  --lit: 1;
+}
+
+/* ============================================================
+   mode-h: the pinned, sideways walk
+   ============================================================ */
+
+html.mode-h {
+  --horizon: 56svh;
+  --coast-h: 13svh;
+  --shore: 80svh; /* where the sea wall meets the pavement */
+  --rail-h: 4.2svh;
+  --feet: 13svh; /* how far above the bottom edge things stand */
+  --gap: clamp(33rem, 40vw, 44rem); /* distance between two stops */
+  --anchor: 30vw; /* where the little man stands */
+  --u: calc(100svh / 900); /* drawings are sized against the height of the stage */
+  --sun-d: 13svh;
+}
+
+html.mode-h body {
+  background: var(--night-ink);
+}
+
+html.mode-h .stage {
+  height: 100svh;
+  overflow: hidden;
+  overflow: clip;
+}
+
+html.mode-h .coast {
+  width: calc(100vw + var(--stops) * 4.4rem);
+  will-change: transform;
+}
+
+html.mode-h .sea {
+  width: calc(100vw + var(--stops) * 14.5rem);
+  height: calc(100svh - var(--horizon));
+  will-change: transform;
+}
+
+html.mode-h .sea__strokes {
+  height: calc(var(--shore) - var(--horizon));
+}
+
+html.mode-h .ferry--a {
+  top: 0.4svh;
+  height: 3.4svh;
+}
+
+html.mode-h .ferry--b {
+  top: 5svh;
+  height: 6svh;
+}
+
+html.mode-h .promenade {
+  top: calc(var(--shore) - var(--rail-h));
+  height: calc(100svh - var(--shore) + var(--rail-h));
+  /* the promenade ends where the pier begins */
+  clip-path: inset(0 calc(100% - var(--prom-end, 200vw)) 0 0);
+}
+
+html.mode-h .track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  will-change: transform;
+}
+
+/* opening screen */
+
+html.mode-h .intro {
+  flex: none;
+  width: 100vw;
+  min-height: 0;
+  padding: 0;
+}
+
+html.mode-h .intro__text {
+  position: absolute;
+  top: 8svh;
+  left: 7vw;
+  width: min(50rem, 58vw);
+  max-width: none;
+}
+
+/* the first sign stands on the promenade on two posts, like the milestones after it */
+html.mode-h .intro__sign {
+  position: absolute;
+  top: 45svh;
+  left: 7vw;
+  width: min(31rem, 46vw);
+  max-width: none;
+  margin: 0;
+  font-size: clamp(0.85rem, 1.9svh, 1.0625rem);
+}
+
+html.mode-h .intro::before,
+html.mode-h .intro::after {
+  content: '';
+  position: absolute;
+  top: calc(45svh + 1rem);
+  bottom: var(--feet);
+  width: 0.55rem;
+  background: var(--indigo);
+}
+
+html.mode-h .intro::before {
+  left: calc(7vw + 2.6rem);
+}
+
+html.mode-h .intro::after {
+  left: calc(7vw + min(31rem, 46vw) - 3.2rem);
+}
+
+html.mode-h .pylon {
+  top: auto;
+  right: auto;
+  left: 73vw;
+  bottom: var(--feet);
+  height: 72svh;
+}
+
+html.mode-h .intro__cue--top {
+  display: none;
+}
+
+/* "In short" takes a place of its own on the path, on two posts, right after the opening screen */
+
+html.mode-h .glance {
+  flex: none;
+  width: calc(var(--gap) + 6rem);
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+html.mode-h .glance__plate {
+  position: absolute;
+  top: 17svh;
+  left: calc(50% - 17em);
+  width: 34em;
+  padding: 1.2em 1.5em 1.3em;
+  font-size: clamp(0.85rem, 1.9svh, 1.0625rem);
+}
+
+html.mode-h .glance::before,
+html.mode-h .glance::after {
+  content: '';
+  position: absolute;
+  top: calc(17svh + 1rem);
+  bottom: var(--feet);
+  width: 0.55rem;
+  background: var(--indigo);
+}
+
+html.mode-h .glance::before {
+  left: calc(50% - 11rem);
+}
+
+html.mode-h .glance::after {
+  left: calc(50% + 10.5rem);
+}
+
+/* the stops */
+
+html.mode-h .stops {
+  display: flex;
+  flex: none;
+  gap: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+html.mode-h .stops::before {
+  content: none;
+}
+
+html.mode-h .stop {
+  display: block;
+  flex: none;
+  width: var(--gap);
+  padding: 0;
+  pointer-events: none;
+}
+
+html.mode-h .stop .plate {
+  pointer-events: auto;
+}
+
+html.mode-h .stop__art {
+  position: absolute;
+  left: 50%;
+  bottom: var(--feet);
+}
+
+html.mode-h .art--lamp {
+  height: calc(640 * var(--u));
+  margin-left: calc(-120 * var(--u)); /* the pole, drawn at x = 120, stands on the centre of the stop */
+}
+
+html.mode-h .plate {
+  position: absolute;
+  width: min(21rem, calc(var(--gap) - 11rem));
+}
+
+html.mode-h .stop--project .plate {
+  top: 30svh;
+  left: calc(50% + 0.75rem);
+}
+
+/* the two brackets that bolt a plate to its lamppost */
+html.mode-h .stop--project .plate::before,
+html.mode-h .stop--project .plate::after {
+  content: '';
+  position: absolute;
+  right: 100%;
+  width: 1rem;
+  height: 0.45rem;
+  background: var(--indigo);
+}
+
+html.mode-h .stop--project .plate::before {
+  top: 1.1rem;
+}
+
+html.mode-h .stop--project .plate::after {
+  bottom: 1.1rem;
+}
+
+html.mode-h .stop--milestone .plate {
+  top: 33svh;
+  left: calc(50% - 10.5rem);
+}
+
+html.mode-h .stop--milestone::before,
+html.mode-h .stop--milestone::after {
+  top: calc(33svh + 1rem);
+  bottom: var(--feet);
+  height: auto;
+  width: 0.55rem;
+}
+
+html.mode-h .stop--milestone::before {
+  left: calc(50% - 7.5rem);
+}
+
+html.mode-h .stop--milestone::after {
+  left: calc(50% + 7rem);
+}
+
+html.mode-h .stop--milestone .stop__art {
+  right: auto;
+  left: calc(50% + 12.5rem);
+  bottom: var(--feet);
+}
+
+html.mode-h .art--bench {
+  height: calc(118 * var(--u));
+}
+
+html.mode-h .stop__green {
+  display: block;
+  position: absolute;
+  left: calc(50% + 15rem);
+  bottom: calc(var(--feet) + 0.4svh);
+}
+
+/* At a milestone the plants keep clear of the bench of the stop before:
+   a bush grows at the foot of the sign, a palm stands behind the bench. */
+html.mode-h .stop--milestone .stop__green {
+  left: calc(50% - 84 * var(--u));
+}
+
+html.mode-h .stop--milestone .stop__green:has(.green--palm) {
+  left: calc(50% + 12.5rem + 30 * var(--u));
+}
+
+html.mode-h .stop--milestone .stop__green:has(.green--palm-tall) {
+  left: calc(50% + 12.5rem - 15 * var(--u));
+}
+
+html.mode-h .green--palm {
+  height: calc(330 * var(--u));
+}
+
+html.mode-h .green--palm-tall {
+  height: calc(500 * var(--u));
+}
+
+html.mode-h .green--oleander {
+  height: calc(92 * var(--u));
+}
+
+/* the clue takes no room: the boat and the sign sit in the empty stretch kept for the mirages */
+
+html.mode-h .clue {
+  display: block;
+  flex: none;
+  width: 0;
+  z-index: 3; /* the boat stays on top of the mirages that appear around it, so it can be clicked again */
+}
+
+html.mode-h .clue__boat {
+  position: absolute;
+  left: calc(var(--gap) * 0.74);
+  bottom: 25.5svh;
+}
+
+html.mode-h .feluca {
+  height: calc(300 * var(--u));
+}
+
+html.mode-h .clue__sign {
+  position: absolute;
+  left: calc(var(--gap) * 0.5 - 7.75rem);
+  bottom: calc(100svh - var(--shore) + 0.6svh);
+  width: 15.5rem;
+}
+
+/* locked mirages keep their place on the path, so nothing moves when they appear */
+
+html.mode-h .stop--secret {
+  display: block;
+  visibility: hidden;
+}
+
+html.mode-h.is-unlocked .stop--secret {
+  visibility: visible;
+}
+
+html.mode-h .stop--secret .plate {
+  top: 15svh;
+  left: calc(50% - 10.5rem);
+}
+
+html.mode-h .stop--secret .stop__art {
+  bottom: 35svh;
+  transform: translateX(-50%);
+}
+
+html.mode-h .stop--secret::before {
+  content: '';
+  position: absolute;
+  top: 24svh;
+  bottom: 49svh;
+  left: 50%;
+  border-left: 2px dashed rgb(245 241 232 / 0.55);
+}
+
+html.mode-h .art--mirage {
+  height: calc(120 * var(--u));
+}
+
+/* the pier */
+
+html.mode-h .pier {
+  display: block;
+  flex: none;
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+html.mode-h .pier__scene {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  background: none;
+}
+
+html.mode-h .madonnina {
+  right: auto;
+  left: 32.6vw;
+  bottom: 38.5svh;
+  height: 26.5svh;
+}
+
+html.mode-h .pier__deck {
+  left: 9vw;
+  top: calc(var(--shore) - 1.4svh);
+  height: auto;
+  background:
+    linear-gradient(var(--deck), var(--deck)) 0 0 / 100% 3.6svh no-repeat,
+    repeating-linear-gradient(to right, var(--pile) 0 1.1rem, transparent 1.1rem 9.5rem) 3rem 0 / auto 100%;
+}
+
+/* the terminal stands on the pier like a notice board, on two posts */
+html.mode-h .pier__scene::before,
+html.mode-h .pier__scene::after {
+  content: '';
+  position: absolute;
+  top: 40svh;
+  bottom: calc(100svh - var(--shore));
+  width: 0.6rem;
+  background: #2a2f6b;
+}
+
+html.mode-h .pier__scene::before {
+  left: calc(52vw + 3rem);
+}
+
+html.mode-h .pier__scene::after {
+  left: calc(52vw + min(40rem, 42vw) - 3.6rem);
+}
+
+html.mode-h .pier__text {
+  position: absolute;
+  top: 9svh;
+  left: 5vw;
+  width: min(26em, 30vw);
+  padding: 1.1em 1.3em 1.2em;
+  font-size: clamp(0.85rem, 1.9svh, 1.0625rem);
+}
+
+html.mode-h .pier__title {
+  font-size: 2.1em;
+}
+
+html.mode-h .pier__lead {
+  margin-top: 0.5em;
+}
+
+html.mode-h .contacts {
+  gap: 0.45em;
+  margin-top: 0.9em;
+}
+
+html.mode-h .contacts li {
+  padding: 0.4em 0.8em;
+}
+
+html.mode-h .contacts--locked {
+  margin-top: 0.45em;
+}
+
+html.mode-h .locked__note {
+  margin-top: 0.6em;
+}
+
+html.mode-h .terminal {
+  position: absolute;
+  top: 11svh;
+  left: 52vw;
+  width: min(40rem, 42vw);
+  height: 52svh;
+  margin: 0;
+}
+
+html.mode-h .walker {
+  top: auto;
+  left: var(--anchor);
+  bottom: 8.2svh;
+  height: calc(140 * var(--u));
+  margin-left: calc(-35 * var(--u));
+}
+
+/* ============================================================
+   mode-v: phones. The scene stays put, the path scrolls over it.
+   ============================================================ */
+
+html.mode-v body {
+  background: var(--night-ink);
+}
+
+html.mode-v .sky {
+  position: fixed;
+  top: 0;
+  bottom: calc(var(--bar) + var(--sea-h));
+  height: auto;
+}
+
+html.mode-v .coast {
+  position: fixed;
+  top: auto;
+  bottom: calc(var(--bar) + var(--sea-h));
+}
+
+html.mode-v .sea {
+  position: fixed;
+  top: auto;
+  bottom: var(--bar);
+}
+
+html.mode-v .promenade {
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  z-index: 6;
+}
+
+html.mode-v .walker {
+  position: fixed;
+  top: auto;
+  left: 0;
+  bottom: 0.7rem;
+  z-index: 7;
+  will-change: transform;
+}
+
+html.mode-v .track {
+  padding-bottom: calc(var(--bar) + var(--rail-h) + 1.5rem);
+}
+
+html.mode-v .pier__scene {
+  display: none;
+}
+
+html.mode-v .pier {
+  padding-bottom: calc(var(--sea-h) + 2rem);
+}

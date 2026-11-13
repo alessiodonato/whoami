@@ -1,0 +1,38 @@
+---
+/** Layer 3: the Strait, with the ferries that never stop crossing it. Decorative. */
+import { seaStrokes } from '../lib/scene.ts';
+
+interface Props {
+  stops: number;
+}
+
+const { stops } = Astro.props;
+const strokes = seaStrokes(232, 60 + stops * 14);
+---
+
+<div class="sea" id="sea" aria-hidden="true">
+  <svg class="sea__strokes" viewBox="0 0 1000 100" preserveAspectRatio="none" focusable="false">
+    {
+      strokes.map((s) => (
+        <rect x={s.x.toFixed(1)} y={s.y.toFixed(1)} width={s.w.toFixed(1)} height={s.h.toFixed(2)} rx={(s.h / 2).toFixed(2)} />
+      ))
+    }
+  </svg>
+
+  {
+    ['a', 'b'].map((name) => (
+      <svg class={`ferry ferry--${name}`} viewBox="0 0 260 78" focusable="false">
+        <path class="ferry__funnel" d="M104 4 h20 v24 h-20 z" />
+        <path class="ferry__deck" d="M150 14 h44 v14 h-44 z M40 28 h178 v20 h-178 z" />
+        <path class="ferry__windows" d="M52 34 h10 v7 h-10 z M70 34 h10 v7 h-10 z M88 34 h10 v7 h-10 z M106 34 h10 v7 h-10 z M124 34 h10 v7 h-10 z M142 34 h10 v7 h-10 z M160 34 h10 v7 h-10 z M178 34 h10 v7 h-10 z M196 34 h10 v7 h-10 z" />
+        <path class="ferry__hull" d="M4 48 H256 L240 74 H22 Z" />
+      </svg>
+    ))
+  }
+</div>
+
+{/* The promenade: the sea wall with its railing, and the pavement. Slides with the path. */}
+<div class="promenade" id="promenade" aria-hidden="true">
+  <div class="promenade__rail"></div>
+  <div class="promenade__ground"></div>
+</div>

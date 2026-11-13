@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# the CV has personal data (phone number): it stays on this machine
+/CV_*
+/*.docx
+/*.pdf

@@ -1,0 +1,872 @@
+/*
+ * The scenery: sky, Calabria, the sea, the promenade, and the drawings.
+ * Colours come from custom properties that start at dawn (set in the page head
+ * from src/lib/sky.ts) and are moved through the day by the script.
+ * Here they are laid out for the first screen of the vertical layout.
+ */
+
+/* ---------- layer 1: sky ---------- */
+
+.sky {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: var(--horizon);
+  overflow: hidden;
+  container-type: size;
+  /* five flat bands, thinner towards the horizon */
+  background: linear-gradient(
+    to bottom,
+    var(--sky-1) 0 30%,
+    var(--sky-2) 30% 54%,
+    var(--sky-3) 54% 73%,
+    var(--sky-4) 73% 88%,
+    var(--sky-5) 88% 100%
+  );
+}
+
+.sky__stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  opacity: var(--night);
+}
+
+.sky__sun,
+.sky__moon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--sun-d);
+  height: var(--sun-d);
+}
+
+/* lift 0 = sitting on the ridge of Calabria, 1 = top of the sky */
+.sky__sun {
+  border-radius: 50%;
+  background: var(--moon);
+  box-shadow:
+    0 0 0 calc(var(--sun-d) * 0.2) rgb(245 241 232 / 0.3),
+    0 0 0 calc(var(--sun-d) * 0.46) rgb(245 241 232 / 0.16);
+  transform: translate(
+    calc(var(--sun-x) * 1cqw - 50%),
+    calc((100cqh - var(--coast-h) * 0.5) * (1 - var(--sun-lift) - var(--sun-intro, 0)) - 50%)
+  );
+}
+
+.sky__moon {
+  width: calc(var(--sun-d) * 1.45);
+  height: calc(var(--sun-d) * 1.45);
+  overflow: visible;
+  transform: translate(
+    calc(var(--moon-x) * 1cqw - 50%),
+    calc((100cqh - var(--coast-h) * 0.5) * (1 - var(--moon-lift)) - 50%)
+  );
+}
+
+.moon__halo {
+  fill: var(--moon);
+  opacity: 0.1;
+}
+
+.moon__face {
+  fill: var(--moon);
+}
+
+.moon__craters {
+  fill: #dcd6cf;
+}
+
+.cloud {
+  position: absolute;
+  fill: var(--moon);
+  opacity: var(--cloud-o);
+}
+
+.cloud--a {
+  top: 27%;
+  left: 61%;
+  width: clamp(7rem, 16cqw, 15rem);
+}
+
+.cloud--b {
+  top: 46%;
+  left: 84%;
+  width: clamp(5rem, 11cqw, 11rem);
+}
+
+.cloud--c {
+  top: 9%;
+  left: 68%;
+  width: clamp(8rem, 19cqw, 18rem);
+}
+
+/* ---------- layer 2: Calabria ---------- */
+
+.coast {
+  position: absolute;
+  left: 0;
+  top: calc(var(--horizon) - var(--coast-h));
+  z-index: 1;
+  width: 100%;
+  height: var(--coast-h);
+}
+
+.coast__ridges {
+  display: block;
+  width: 100%;
+  height: calc(100% + 1px);
+}
+
+.coast__far {
+  fill: var(--coast-far);
+}
+
+.coast__near {
+  fill: var(--coast-near);
+}
+
+.coast__lights {
+  fill: var(--lamp-on);
+  opacity: var(--night);
+}
+
+.coast__pylon {
+  position: absolute;
+  left: 9%;
+  bottom: 18%;
+  height: 70%;
+  fill: none;
+  stroke: var(--coast-near);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.coast__mirage {
+  position: absolute;
+  left: 0;
+  bottom: 62%;
+  width: 100%;
+  height: 46%;
+  fill: var(--coast-near);
+  opacity: 0;
+  transform: scaleY(-1);
+  transition: opacity 1.2s;
+}
+
+html.is-unlocked .coast__mirage {
+  opacity: 0.34;
+}
+
+/* ---------- layer 3: the sea ---------- */
+
+.sea {
+  position: absolute;
+  left: 0;
+  top: var(--horizon);
+  z-index: 2;
+  width: 100%;
+  height: var(--sea-h);
+  background: var(--sea);
+  overflow: hidden;
+}
+
+.sea__strokes {
+  display: block;
+  width: 100%;
+  height: var(--sea-h);
+  fill: var(--glint);
+}
+
+.ferry {
+  position: absolute;
+  width: auto;
+}
+
+.ferry--a {
+  top: calc(var(--sea-h) * 0.02);
+  left: 24%;
+  height: calc(var(--sea-h) * 0.15);
+}
+
+.ferry--b {
+  top: calc(var(--sea-h) * 0.2);
+  left: 63%;
+  height: calc(var(--sea-h) * 0.25);
+  transform: scaleX(-1);
+}
+
+.ferry__hull {
+  fill: var(--indigo);
+}
+
+.ferry__deck {
+  fill: var(--moon);
+}
+
+.ferry__funnel {
+  fill: var(--coral);
+}
+
+.ferry__windows {
+  fill: color-mix(in srgb, var(--lamp-on) calc(var(--night) * 100%), var(--azure));
+}
+
+/* ---------- the promenade: railing, sea wall, pavement ---------- */
+
+.promenade {
+  position: absolute;
+  left: 0;
+  top: calc(100svh - var(--bar) - var(--rail-h));
+  z-index: 3;
+  width: 100%;
+  height: calc(var(--bar) + var(--rail-h));
+  display: grid;
+  grid-template-rows: var(--rail-h) minmax(0, 1fr);
+}
+
+.promenade__rail {
+  background:
+    linear-gradient(var(--indigo), var(--indigo)) 0 0 / 100% 4px no-repeat,
+    linear-gradient(var(--indigo), var(--indigo)) 0 58% / 100% 2px no-repeat,
+    repeating-linear-gradient(to right, var(--indigo) 0 4px, transparent 4px 3rem) var(--px, 0px) 0 / auto 100%;
+}
+
+.promenade__ground {
+  background:
+    linear-gradient(var(--wall), var(--wall)) 0 0 / 100% min(22%, 1.1rem) no-repeat,
+    repeating-linear-gradient(to right, transparent 0 7.4rem, rgb(27 31 75 / 0.13) 7.4rem 7.55rem) var(--px, 0px) 0 /
+      auto 100%,
+    var(--ground);
+}
+
+/* ---------- the little man ---------- */
+
+.walker {
+  position: absolute;
+  left: max(1rem, 7vw);
+  top: calc(100svh - var(--walker-h) - 0.7rem);
+  z-index: 5;
+  height: var(--walker-h);
+  pointer-events: none;
+}
+
+.walker__rig {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+}
+
+.walker__fig {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: auto;
+  height: 100%;
+  overflow: visible;
+}
+
+.w-leg path,
+.w-arm path {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.walker__fig {
+  transform-origin: 50% 100%;
+}
+
+.w-hair {
+  fill: var(--indigo);
+}
+
+.stage.is-night .w-hair {
+  fill: #4a4f8e;
+}
+
+.w-traps {
+  fill: #c94a2c;
+}
+
+/* the backpack and its load: each piece shows up at the stop that brings it */
+.w-item {
+  opacity: 0;
+  transition: opacity 0.45s;
+}
+
+.w-item.is-here {
+  opacity: 1;
+}
+
+.b-bag {
+  fill: var(--violet);
+  stroke: var(--indigo);
+  stroke-width: 2.4;
+}
+
+.b-line {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.b-coral {
+  fill: var(--coral);
+}
+
+.b-cross {
+  fill: var(--azure);
+  stroke: var(--moon);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+
+.w-arm path {
+  stroke: #c94a2c;
+  stroke-width: 6;
+}
+
+.w-body {
+  fill: var(--coral);
+}
+
+.w-head {
+  fill: var(--peach);
+  stroke: var(--indigo);
+  stroke-width: 3;
+}
+
+/* at night his legs would disappear into the pavement */
+.stage.is-night .w-leg path {
+  stroke: #8f94cc;
+}
+
+/* what he picks up along the way: hidden until he has passed the stop that brings it */
+
+.walker__train {
+  position: absolute;
+  right: 106%;
+  bottom: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.walker__dog {
+  flex: none;
+  width: auto;
+  height: 47%;
+  margin-bottom: 2%;
+  overflow: visible;
+  opacity: 0;
+  transform: translateX(-70%);
+  transition:
+    opacity 0.45s,
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.walker__dog.is-here {
+  opacity: 1;
+  transform: none;
+}
+
+/* the suitcase: its height is set by the script, a little more at every stop */
+.walker__case {
+  flex: none;
+  width: auto;
+  height: 26%;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.45s;
+}
+
+.walker__case.is-here {
+  opacity: 1;
+}
+
+.c-body {
+  fill: var(--azure);
+  stroke: var(--indigo);
+  stroke-width: 4;
+}
+
+.c-handle {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 4.5;
+  stroke-linejoin: round;
+}
+
+.c-strap {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 5;
+}
+
+.c-dot {
+  fill: var(--coral);
+}
+
+.c-tag {
+  fill: var(--moon);
+  stroke: var(--indigo);
+  stroke-width: 2;
+}
+
+.c-wheel {
+  fill: var(--indigo);
+}
+
+.d-body {
+  fill: var(--moon);
+  stroke: var(--indigo);
+  stroke-width: 3.5;
+}
+
+.d-stripe {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.d-head {
+  fill: var(--indigo);
+}
+
+.d-eye {
+  fill: var(--coral);
+}
+
+.d-leg path {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 5.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.d-leg--far path {
+  stroke: #4a4f8e;
+}
+
+.walker__orbit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.walker__orbit--back {
+  z-index: 0;
+}
+
+.walker__orbit--front {
+  z-index: 2;
+}
+
+.walker__orbit.is-here {
+  opacity: 1;
+}
+
+.o-ring {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3.5;
+  opacity: 0.75;
+}
+
+.o-gear path {
+  fill: var(--moon);
+  stroke: var(--indigo);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.o-hub {
+  fill: var(--coral);
+}
+
+.stage.is-night .d-leg path,
+.stage.is-night .o-ring,
+.stage.is-night .o-gear path,
+.stage.is-night .b-line,
+.stage.is-night .b-bag,
+.stage.is-night .c-body,
+.stage.is-night .c-handle {
+  stroke: #8f94cc;
+}
+
+.stage.is-night .c-wheel {
+  fill: #8f94cc;
+}
+
+.stage.is-night .d-leg--far path {
+  stroke: #6166a6;
+}
+
+.stage.is-night .d-head {
+  fill: #8f94cc;
+}
+
+/* ---------- Il Pilone ---------- */
+
+.pylon {
+  --pylon-h: min(44svh, 26rem);
+  position: absolute;
+  right: clamp(0.4rem, 5vw, 5rem);
+  top: calc(100svh - var(--bar) + 3px - var(--pylon-h));
+  z-index: -1;
+  width: auto;
+  height: var(--pylon-h);
+  fill: none;
+  stroke: var(--indigo);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pylon__legs {
+  stroke-width: 5;
+}
+
+.pylon__arms {
+  stroke-width: 4;
+}
+
+.pylon__web {
+  stroke-width: 2.2;
+}
+
+.pylon__light {
+  fill: var(--coral);
+  stroke: none;
+}
+
+/* ---------- the drawings at the stops ---------- */
+
+.art,
+.green {
+  display: block;
+  width: auto;
+  overflow: visible;
+}
+
+.art--lamp {
+  height: 15rem;
+}
+
+.art--bench {
+  height: 3.3rem;
+}
+
+.art--mirage {
+  height: 4.2rem;
+}
+
+.a-ink {
+  fill: var(--indigo);
+}
+
+.a-line {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.a-hi {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.32;
+}
+
+.a-coral {
+  fill: var(--coral);
+}
+
+.a-moon {
+  fill: var(--moon);
+}
+
+/* the lamp: grey glass by day, lit when you get there */
+.a-bulb {
+  fill: color-mix(in srgb, var(--lamp-on) calc(var(--lit) * 100%), var(--lamp-off));
+  stroke: var(--indigo);
+  stroke-width: 3.5;
+  transition: fill 0.45s;
+}
+
+.a-glow {
+  fill: var(--lamp-on);
+  opacity: calc(var(--lit) * 0.42);
+  transition: opacity 0.7s;
+}
+
+.art--lamp:not(.art--lamp-fork) .a-glow circle:first-child {
+  fill-opacity: 0.45;
+}
+
+.a-pool {
+  fill: var(--lamp-on);
+  opacity: calc(var(--lit) * 0.38);
+  transition: opacity 0.7s;
+}
+
+/* Forchetta: three tines, and they never light at the same moment */
+.art--lamp-fork .a-bulb:nth-of-type(2) {
+  transition-delay: 0.18s;
+}
+
+.art--lamp-fork .a-bulb:nth-of-type(3) {
+  transition-delay: 0.36s;
+}
+
+/* Pillole di LLM: the pharmacy cross */
+.a-cross {
+  fill: color-mix(in srgb, var(--azure) calc(var(--lit) * 100%), var(--lamp-off));
+  stroke: var(--indigo);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  transition: fill 0.45s;
+}
+
+.a-cross-in {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.a-rope {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 2;
+}
+
+.a-spray {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.a-groove {
+  fill: none;
+  stroke: var(--violet);
+  stroke-width: 1.6;
+}
+
+.a-hole {
+  fill: var(--indigo);
+}
+
+.a-frond {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.a-bush {
+  fill: var(--indigo);
+}
+
+/* a project plate takes a ring of lamplight when its lamp is on */
+.stop--project .plate {
+  box-shadow:
+    0 0 0 calc(var(--lit) * 0.32rem) rgb(253 230 204 / 0.75),
+    0.32rem 0.32rem 0 rgb(13 16 48 / 0.32);
+  transition: box-shadow 0.5s;
+}
+
+/* a mirage: drawn in light, it floats over the water, and its double hangs upside down above it */
+.stop--secret .stop__art {
+  filter: url(#haze);
+}
+
+.stop--secret .a-ink,
+.stop--secret .a-moon {
+  fill: var(--moon);
+}
+
+.stop--secret .a-line,
+.stop--secret .a-rope {
+  stroke: var(--moon);
+}
+
+.stop--secret .a-groove {
+  stroke: var(--indigo);
+  opacity: 0.6;
+}
+
+.stop--secret .a-hi {
+  stroke: #fff;
+  opacity: 1;
+}
+
+.stop--secret .art--vinyl .a-ink {
+  fill: var(--violet);
+  stroke: var(--moon);
+  stroke-width: 3;
+}
+
+.stop--secret .art--vinyl .a-groove {
+  stroke: var(--moon);
+  opacity: 0.55;
+}
+
+.stop--secret .art--vinyl .a-hole {
+  fill: var(--moon);
+}
+
+.stop__echo {
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  opacity: 0.32;
+  transform: scaleY(-1);
+}
+
+/* ---------- the feluca ---------- */
+
+.feluca {
+  display: block;
+  width: auto;
+  height: 8.5rem;
+  overflow: visible;
+}
+
+.feluca__hull {
+  fill: var(--indigo);
+}
+
+.feluca__stripe {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 4;
+}
+
+.feluca__cabin {
+  fill: var(--moon);
+  stroke: var(--indigo);
+  stroke-width: 3;
+}
+
+.feluca__mast,
+.feluca__bridge {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.feluca__bridge {
+  stroke-width: 5;
+}
+
+.feluca__web,
+.feluca__rig {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.feluca__nest {
+  fill: var(--indigo);
+}
+
+.feluca__man {
+  fill: var(--coral);
+}
+
+.clue__boat:not(:disabled):hover .feluca__man,
+.clue__boat:focus-visible .feluca__man {
+  fill: var(--moon);
+}
+
+/* ---------- the harbour at the end ---------- */
+
+.madonnina {
+  position: absolute;
+  right: 8%;
+  bottom: 3.2rem;
+  width: auto;
+  height: 11rem;
+}
+
+.madonnina__stone {
+  fill: #4b4380;
+}
+
+.madonnina__words {
+  fill: var(--lamp-on);
+  font: 700 15px var(--font-text);
+}
+
+.madonnina__gold {
+  fill: var(--lamp-on);
+}
+
+.pier__scene {
+  background: linear-gradient(to bottom, transparent 0 calc(100% - 5.2rem), var(--sea) calc(100% - 5.2rem) 100%);
+}
+
+.pier__deck {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3.2rem;
+  --deck: #4b4380;
+  --pile: #2a2f6b;
+  background:
+    linear-gradient(var(--deck), var(--deck)) 0 0 / 100% 0.9rem no-repeat,
+    repeating-linear-gradient(to right, var(--pile) 0 0.9rem, transparent 0.9rem 8rem) 2rem 0 / auto 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* the pharmacy cross blinks three times when it comes on, then stays lit */
+  .stop.is-lit .a-cross {
+    animation: cross-blink 0.9s steps(1) 3;
+  }
+
+  @keyframes cross-blink {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  /* the record turns a few times when you get to it, then rests */
+  html.is-unlocked .stop.is-lit .art--vinyl {
+    animation: spin 4.5s cubic-bezier(0.3, 0, 0.2, 1) 1;
+  }
+
+  .art--vinyl {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(2turn);
+    }
+  }
+}

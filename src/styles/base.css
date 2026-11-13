@@ -1,0 +1,1074 @@
+/*
+ * The page as it is with no script and with reduced motion:
+ * a vertical path, every stop in full, a sky that goes from dawn to night down the page.
+ * The scripted layouts (modes.css) build on top of this one.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--night-ink);
+  scrollbar-gutter: stable;
+}
+
+/* while the panel is open the page behind it stays where it is */
+html:has(.panel[open]) {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  font: 400 var(--step-0) / 1.5 var(--font-text);
+  color: var(--indigo);
+  background: var(--page-sky, var(--peach));
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-weight: 800;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--coral);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 4px;
+}
+
+/* Two rings, one dark and one light: visible on every sky from dawn to night. */
+:focus-visible {
+  outline: 3px solid var(--indigo);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 8px var(--moon);
+  border-radius: 0.3rem;
+}
+
+kbd,
+code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 20;
+  padding: 0.6rem 1rem;
+  background: var(--moon);
+  border: 2.5px solid var(--indigo);
+  border-radius: 0.6rem;
+  font-weight: 700;
+  transform: translateY(-200%);
+}
+
+.skip:focus {
+  transform: none;
+}
+
+/* ---------- two shortcuts, always in reach ---------- */
+
+.quick {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.9rem;
+  z-index: 12;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.quick a {
+  padding: 0.2rem 0.85rem;
+  background: var(--moon);
+  color: var(--indigo);
+  border: 2.5px solid var(--indigo);
+  border-radius: 99px;
+  box-shadow: 0.18rem 0.18rem 0 rgb(13 16 48 / 0.32);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.quick a:hover {
+  background: var(--indigo);
+  color: var(--moon);
+}
+
+/* ---------- the stage and its four layers ---------- */
+
+.stage {
+  position: relative;
+  isolation: isolate;
+}
+
+.track {
+  position: relative;
+  z-index: 4;
+}
+
+/* ---------- opening screen ---------- */
+
+.intro {
+  position: relative;
+  min-height: 100svh;
+  padding: clamp(3.5rem, 10svh, 6rem) var(--gutter)
+    calc(var(--bar) + var(--rail-h) + var(--sea-h) + var(--coast-h) + 1rem);
+}
+
+.intro__text {
+  max-width: 40rem;
+}
+
+.intro__sign {
+  position: relative;
+  z-index: 1;
+  max-width: 33rem;
+  margin-top: 1.4rem;
+  padding: 1rem 1.2rem 1.05rem;
+  background: var(--moon);
+  border: 2.5px solid var(--indigo);
+  border-radius: 0.7rem;
+  outline: 2px solid var(--indigo);
+  outline-offset: -0.5rem;
+  box-shadow: 0.32rem 0.32rem 0 rgb(13 16 48 / 0.32);
+}
+
+/* The only words printed straight on the sky are these two lines and the headline:
+   large and bold, so they hold their contrast while the sky changes under them. */
+.intro__who,
+.intro__cue--top {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.intro__who {
+  margin-bottom: 0.8rem;
+}
+
+.intro__title {
+  font-size: var(--step-hero);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+}
+
+.intro__lead {
+  padding: 0.35rem 0.4rem 0;
+}
+
+/* only true where he actually walks: shown by the scripted layouts, never in the static one */
+.intro__carry {
+  display: none;
+}
+
+html.mode-h .intro__carry,
+html.mode-v .intro__carry {
+  display: inline;
+}
+
+.intro__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  margin-top: 0.7rem;
+  padding: 0 0.4rem 0.3rem;
+}
+
+.intro__cue {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+
+.intro__cue--top {
+  display: none;
+  margin-top: 1.1rem;
+}
+
+.intro__cue svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 767.98px) {
+  .intro {
+    min-height: 0;
+    padding-bottom: 0;
+  }
+
+  .intro__text {
+    min-height: calc(100svh - clamp(3.5rem, 10svh, 6rem));
+  }
+
+  .intro__cue--top {
+    display: flex;
+  }
+
+  .intro__sign {
+    margin-top: 2rem;
+  }
+
+  .intro__sign .intro__cue {
+    display: none;
+  }
+
+  .intro__foot {
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- "In short": the sign for whoever is in a hurry ---------- */
+
+.glance {
+  position: relative;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6svh, 3.5rem) var(--gutter) 0;
+}
+
+.glance__plate {
+  position: relative;
+  z-index: 1;
+  padding: 1.3rem 1.5rem 1.35rem;
+  background: var(--moon);
+  border: 2.5px solid var(--indigo);
+  border-radius: 0.7rem;
+  outline: 2px solid var(--indigo);
+  outline-offset: -0.5rem;
+  box-shadow: 0.32rem 0.32rem 0 rgb(13 16 48 / 0.32);
+}
+
+.glance__title {
+  font-size: 1.45em;
+}
+
+.glance__rows {
+  display: grid;
+  gap: 0.4em;
+  margin: 0.65em 0 0;
+}
+
+.glance__rows div {
+  display: grid;
+  grid-template-columns: 6.2em minmax(0, 1fr);
+  gap: 0.9em;
+}
+
+.glance__rows dt {
+  font-weight: 700;
+}
+
+.glance__rows dd {
+  margin: 0;
+}
+
+.glance__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 1.2em;
+  margin-top: 0.85em;
+  font-weight: 700;
+}
+
+@media (max-width: 30rem) {
+  .glance__rows div {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* ---------- the stops ---------- */
+
+.stops {
+  position: relative;
+  list-style: none;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 9svh, 5rem) var(--gutter);
+  display: grid;
+  gap: clamp(3.5rem, 13svh, 7rem);
+}
+
+/* the path itself: a pale strip of pavement running down the page, under the lampposts */
+.stops::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--gutter) + 1.6rem);
+  width: 2.5rem;
+  background: rgb(245 241 232 / 0.3);
+}
+
+.stop {
+  position: relative;
+  display: grid;
+  grid-template-columns: 5.4rem minmax(0, 1fr);
+  align-items: end;
+}
+
+.stop__green {
+  display: none;
+}
+
+.stop__art {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.plate {
+  position: relative;
+  z-index: 1;
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  padding: 0.95rem 1.1rem 1.05rem;
+  background: var(--moon);
+  color: var(--indigo);
+  border: 2.5px solid var(--indigo);
+  border-radius: 0.7rem;
+  box-shadow: 0.32rem 0.32rem 0 rgb(13 16 48 / 0.32);
+}
+
+/* a milestone is a road sign on two posts, with a bench beside it */
+.stop--milestone {
+  grid-template-columns: minmax(0, 1fr);
+  padding-bottom: 3.4rem;
+}
+
+.stop--milestone .plate {
+  grid-column: 1;
+  outline: 2px solid var(--indigo);
+  outline-offset: -0.5rem;
+  padding: 1.3rem 1.5rem 1.35rem;
+}
+
+.stop--milestone .stop__art {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0;
+}
+
+.stop--milestone::before,
+.stop--milestone::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  height: 3.6rem;
+  width: 0.5rem;
+  background: var(--indigo);
+}
+
+.stop--milestone::before {
+  left: 2.35rem;
+}
+
+.stop--milestone::after {
+  left: 9rem;
+}
+
+.plate__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.7rem;
+}
+
+.plate__title {
+  font-size: var(--step-2);
+  order: 1;
+}
+
+.status {
+  order: 2;
+}
+
+.plate__year {
+  order: 3;
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-weight: 600;
+  color: var(--violet-ink);
+}
+
+.stop--milestone .plate__year {
+  order: 0;
+  flex-basis: 100%;
+  margin-left: 0;
+  font-size: var(--step-1);
+}
+
+.status {
+  padding: 0.05rem 0.55rem;
+  border-radius: 0.35rem;
+  font-size: var(--step--1);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.status--stable {
+  background: var(--indigo);
+  color: var(--moon);
+}
+
+.status--beta {
+  background: var(--violet);
+  color: var(--moon);
+}
+
+.status--wip {
+  background: var(--roadworks);
+  color: var(--indigo);
+  border: 3px solid;
+  border-image: repeating-linear-gradient(-45deg, var(--indigo) 0 6px, var(--roadworks) 6px 12px) 3;
+}
+
+.plate__pitch {
+  margin-top: 0.45rem;
+}
+
+.plate__more {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.8rem;
+}
+
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.7rem;
+}
+
+.stack__title {
+  font-size: var(--step--1);
+  font-weight: 700;
+}
+
+.stack__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0;
+  list-style: none;
+  font-size: var(--step--1);
+}
+
+.stack__list li {
+  padding: 0.02rem 0.6rem;
+  border: 1.5px solid var(--indigo);
+  border-radius: 99px;
+}
+
+.plate__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  margin-top: 0.8rem;
+}
+
+.plate__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+  padding: 0;
+  list-style: none;
+  font-weight: 700;
+}
+
+.plate__links a {
+  position: relative;
+  z-index: 1;
+}
+
+/* added by the script: the title becomes the button that opens the panel, and the whole plate is its target */
+.plate__open {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-variation-settings: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plate__open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.55rem;
+}
+
+.plate__hint,
+.plate__open--pill {
+  margin-left: auto;
+  padding: 0.05rem 0.6rem 0.05rem 0.5rem;
+  border: 1.5px solid var(--indigo);
+  border-radius: 99px;
+  font-family: var(--font-text);
+  font-variation-settings: normal;
+  font-size: var(--step--1);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* the same on every sign that opens: the stops, the first sign, "In short" */
+:is(.plate, .glance__plate):has(.plate__open:hover) .plate__hint,
+:is(.plate, .glance__plate):has(.plate__open:focus-visible) .plate__hint,
+.intro__sign:hover .plate__open--pill,
+.plate__open--pill:focus-visible {
+  background: var(--indigo);
+  color: var(--moon);
+}
+
+/* links on a sign stay above the surface that opens it */
+.glance__links a {
+  position: relative;
+  z-index: 1;
+}
+
+html.js .stop .plate__more {
+  display: none;
+}
+
+/* the secret stops stay out of the page until the Fata Morgana shows up */
+.stop--secret {
+  display: none;
+}
+
+html.is-unlocked .stop--secret {
+  display: grid;
+}
+
+.stop--secret .plate {
+  border-style: dashed;
+  border-color: var(--violet);
+}
+
+/* ---------- the clue ---------- */
+
+.clue {
+  position: relative;
+  display: grid;
+  grid-template-columns: 6.4rem minmax(0, 1fr);
+  align-items: end;
+  gap: 0.6rem;
+}
+
+.clue__boat {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.clue__boat:disabled {
+  cursor: default;
+}
+
+.clue__sign {
+  padding: 0.65rem 0.85rem;
+  background: var(--violet);
+  color: var(--moon);
+  border: 2px solid var(--moon);
+  border-radius: 0.5rem;
+  font-size: var(--step--1);
+}
+
+.clue__sign strong {
+  display: block;
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-size: var(--step-0);
+}
+
+/* ---------- the pier ---------- */
+
+.pier {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 10svh, 6rem) var(--gutter) 0;
+  color: var(--moon);
+}
+
+.pier__text {
+  padding: 1.3rem 1.4rem 1.4rem;
+  background: var(--night-ink);
+  border: 2.5px solid var(--moon);
+  border-radius: 0.7rem;
+}
+
+.pier__title {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem);
+}
+
+.pier__lead {
+  margin-top: 0.7rem;
+  max-width: 30rem;
+}
+
+.contacts {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.contacts li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 1rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--moon);
+  color: var(--indigo);
+  border-radius: 0.45rem;
+}
+
+.contacts__name {
+  min-width: 4.8rem;
+  font-weight: 700;
+}
+
+.contacts__value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* what is shared only on request: the same rows, with a padlock and nothing behind them */
+.contacts--locked {
+  grid-template-columns: repeat(auto-fit, minmax(9.5em, 1fr));
+  margin-top: 0.5rem;
+}
+
+.contacts--locked li {
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  color: var(--moon);
+  border: 2px dashed rgb(245 241 232 / 0.55);
+}
+
+.contacts--locked .contacts__name {
+  min-width: 0;
+}
+
+.contacts--locked .contacts__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  white-space: nowrap;
+}
+
+.padlock {
+  width: 1.05em;
+  height: 1.05em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.padlock rect {
+  fill: currentColor;
+  stroke: none;
+}
+
+.locked__note {
+  margin-top: 0.7rem;
+  font-weight: 600;
+}
+
+.pier__scene {
+  order: 3;
+  position: relative;
+  width: 100vw;
+  height: 15rem;
+  margin: 2.5rem 0 0 calc(50% - 50vw);
+  overflow: hidden;
+}
+
+/* ---------- the terminal ---------- */
+
+.terminal {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  height: 23rem;
+  margin-top: 1.6rem;
+  overflow: hidden;
+  background: var(--night-ink);
+  color: var(--moon);
+  border: 2.5px solid var(--moon);
+  border-radius: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.terminal[hidden] {
+  display: none;
+}
+
+.terminal__bar {
+  padding: 0.3rem 0.85rem;
+  background: var(--moon);
+  color: var(--indigo);
+  font-weight: 700;
+}
+
+.terminal__log {
+  padding: 0.7rem 0.9rem 0.3rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.terminal__log:focus-visible {
+  outline-offset: -4px;
+  outline-color: var(--peach);
+  box-shadow: none;
+}
+
+.terminal__log p {
+  margin-bottom: 0.35rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.terminal__log .t-cmd {
+  color: var(--peach);
+}
+
+.terminal__log .t-dim {
+  color: #b9b3cf;
+}
+
+.terminal__log button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--coral);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.terminal__log :focus-visible,
+.terminal__input:focus-visible {
+  outline-color: var(--peach);
+  box-shadow: none;
+}
+
+.terminal__form {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.9rem;
+  border-top: 1.5px solid rgb(245 241 232 / 0.3);
+}
+
+.terminal__prompt {
+  color: var(--peach);
+  font-weight: 700;
+}
+
+.terminal__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.35rem 0.3rem;
+  border: 0;
+  border-radius: 0.3rem;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 1rem; /* 16px: iOS zooms on anything smaller */
+  caret-color: var(--coral);
+}
+
+.terminal__input::placeholder {
+  color: rgb(245 241 232 / 0.6);
+}
+
+.terminal__tip {
+  padding: 0 0.9rem 0.55rem;
+  font-family: var(--font-text);
+  font-size: var(--step--1);
+}
+
+/* ---------- the panel ---------- */
+
+.panel {
+  width: min(38rem, calc(100vw - 1.5rem));
+  max-height: min(46rem, calc(100dvh - 1.5rem));
+  padding: 0;
+  overflow: hidden;
+  background: var(--moon);
+  color: var(--indigo);
+  border: 3px solid var(--indigo);
+  border-radius: 1rem;
+  box-shadow: 0.55rem 0.55rem 0 rgb(13 16 48 / 0.5);
+}
+
+.panel[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel::backdrop {
+  background: rgb(13 16 48 / 0.62);
+}
+
+.panel__body {
+  padding: 1.5rem 1.6rem 0.5rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.panel__body .plate__title {
+  font-size: clamp(1.7rem, 1.3rem + 2vw, 2.3rem);
+}
+
+.panel__body .plate__pitch {
+  margin-top: 0.7rem;
+  font-size: var(--step-1);
+  line-height: 1.4;
+}
+
+.panel__body .plate__more {
+  margin-top: 1.1rem;
+}
+
+.panel__body .plate__foot {
+  margin-top: 1.2rem;
+}
+
+.panel__body .plate__links {
+  gap: 0.5rem 0.6rem;
+}
+
+.panel__body .plate__links a {
+  display: inline-block;
+  padding: 0.4rem 0.95rem;
+  background: var(--indigo);
+  color: var(--moon);
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+
+.panel__body .plate__links a:hover {
+  background: var(--violet-ink);
+}
+
+.panel__body .intro__lead {
+  margin-top: 1rem;
+  padding: 0;
+}
+
+.panel__body .intro__foot:empty {
+  display: none;
+}
+
+.panel__body .glance__title {
+  font-size: clamp(1.7rem, 1.3rem + 2vw, 2.3rem);
+}
+
+.panel__body .glance__rows {
+  gap: 0.7rem;
+  margin-top: 1rem;
+  font-size: var(--step-1);
+  line-height: 1.4;
+}
+
+.panel__body .glance__rows div {
+  grid-template-columns: 7rem minmax(0, 1fr);
+}
+
+.panel__body .glance__links {
+  gap: 0.5rem 0.6rem;
+  margin-top: 1.3rem;
+}
+
+.panel__body .glance__links a,
+.panel__body .plate__links a {
+  display: inline-block;
+  padding: 0.4rem 0.95rem;
+  background: var(--indigo);
+  color: var(--moon);
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+
+.panel__body .glance__links a:hover {
+  background: var(--violet-ink);
+}
+
+@media (max-width: 30rem) {
+  .panel__body .glance__rows div {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel__foot {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.6rem 1.6rem 1.2rem;
+}
+
+.panel__close {
+  padding: 0.4rem 1rem;
+  background: none;
+  color: var(--indigo);
+  border: 2px solid var(--indigo);
+  border-radius: 0.5rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.panel__close:hover {
+  background: var(--indigo);
+  color: var(--moon);
+}
+
+/* the line read out when the mirages appear; visible for a moment, bottom of the screen */
+.notice {
+  position: fixed;
+  left: 50%;
+  bottom: 1.2rem;
+  z-index: 15;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  padding: 0.6rem 1rem;
+  background: var(--violet);
+  color: var(--moon);
+  border: 2px solid var(--moon);
+  border-radius: 0.6rem;
+  font-weight: 600;
+  transform: translate(-50%, 0);
+}
+
+.notice:empty {
+  display: none;
+}
+
+.notice button {
+  margin-left: 0.6rem;
+  padding: 0.1rem 0.6rem;
+  background: var(--moon);
+  color: var(--indigo);
+  border: 0;
+  border-radius: 0.35rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------- only in `npm run dev`: what is still a TODO ---------- */
+
+.todo {
+  padding: 0 0.3em;
+  background: repeating-linear-gradient(-45deg, var(--roadworks) 0 9px, #ffd95e 9px 18px);
+  color: #14110a;
+  border-radius: 0.2em;
+  outline: 2px dashed #14110a;
+  outline-offset: 1px;
+  font-weight: 700;
+}
+
+.todo-badge {
+  position: fixed;
+  top: 3.6rem;
+  right: 0.75rem;
+  z-index: 30;
+  max-width: min(22rem, calc(100vw - 1.5rem));
+  padding: 0.45rem 0.8rem;
+  background: var(--roadworks);
+  color: #14110a;
+  border: 3px solid #14110a;
+  border-radius: 0.5rem;
+  font-size: var(--step--1);
+  box-shadow: 0.25rem 0.25rem 0 #14110a;
+}
+
+.todo-badge summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.todo-badge ul {
+  margin: 0.5rem 0;
+  padding-left: 1.1rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel[open] {
+    animation: panel-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.8rem);
+    }
+  }
+}

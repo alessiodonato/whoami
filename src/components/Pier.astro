@@ -1,0 +1,101 @@
+---
+/** The end of the walk: the pier in the harbour, at night, under the Madonnina. Contacts and the terminal. */
+import { contacts, onRequest } from '../data/journey.ts';
+import { skyAt } from '../lib/sky.ts';
+import { isTodo } from '../lib/todos.ts';
+import Terminal from './Terminal.astro';
+import Text from './Text.astro';
+
+const night = skyAt(1);
+const nightVars = `--ground:${night.ground};--wall:${night.wall};--sea:${night.sea};--glint:${night.glint}`;
+
+const handle = (url: string) => url.replace(/\/+$/, '').split('/').pop() ?? url;
+
+const NAMES: Record<string, string> = { email: 'Email', github: 'GitHub', linkedin: 'LinkedIn' };
+
+// One row per line of `contacts`: remove a line there and its row is gone.
+const rows = Object.entries(contacts as Record<string, string>)
+  .filter(([, value]) => value)
+  .map(([key, value]) => {
+    const name = NAMES[key] ?? key.charAt(0).toUpperCase() + key.slice(1);
+    if (key === 'email') return { name, value, href: `mailto:${value}`, text: value, newTab: false };
+    if (key === 'github') return { name, value, href: value, text: `@${handle(value)}`, newTab: true };
+    // LinkedIn adds an id to the address (name-surname-1a2b3c4d5): the row shows it without, the link keeps it.
+    return { name, value, href: value, text: handle(value).replace(/-[0-9a-f]{7,}$/i, ''), newTab: true };
+  });
+
+rows.push({ name: 'CV', value: 'cv', href: `${import.meta.env.BASE_URL.replace(/\/$/, '')}/cv/`, text: 'One page, public', newTab: true });
+
+// "Contact me" is a link when there is an address to write to.
+const email = contacts.email && !isTodo(contacts.email) ? contacts.email : null;
+const ask = email ? `mailto:${email}?subject=${encodeURIComponent('More information')}` : null;
+---
+
+<section class="pier" id="pier" aria-labelledby="pier-title" style={nightVars}>
+  <div class="pier__scene" aria-hidden="true">
+    {/* La Madonnina del porto, on her column at the mouth of the harbour. The wall really says that. */}
+    <svg class="madonnina" viewBox="0 0 360 330" focusable="false">
+      <path class="madonnina__stone" d="M10 330 V268 Q10 244 34 244 H326 Q350 244 350 268 V330 Z"></path>
+      <path class="madonnina__stone" d="M171 244 L175 86 H185 L189 244 Z M166 76 h28 v11 h-28 z"></path>
+      <text class="madonnina__words" x="180" y="296" text-anchor="middle" textLength="290" lengthAdjust="spacingAndGlyphs">VOS ET IPSAM CIVITATEM BENEDICIMUS</text>
+      <g class="madonnina__gold">
+        <circle cx="180" cy="66" r="10"></circle>
+        <path d="M170 57 Q180 16 190 57 Z"></path>
+        <circle cx="180" cy="17" r="5.5"></circle>
+        <path d="M185 36 L196 24 L198 27 L188 40 Z"></path>
+      </g>
+    </svg>
+    <div class="pier__deck"></div>
+  </div>
+
+  <div class="pier__text">
+    <h2 class="pier__title" id="pier-title">End of the pier.</h2>
+    <p class="pier__lead">The walk stops here, the conversation doesn't have to. Write to me, or ask the terminal.</p>
+    <ul class="contacts" id="contacts">
+      {
+        rows.map((row) => (
+          <li>
+            <span class="contacts__name">{row.name}</span>
+            {isTodo(row.value) ? (
+              <span class="contacts__value" data-contact={row.name}>
+                <Text value="TODO" />
+              </span>
+            ) : (
+              <a class="contacts__value" href={row.href} data-contact={row.name} target={row.newTab ? '_blank' : undefined} rel={row.newTab ? 'noopener' : undefined}>
+                {row.text}
+                {row.newTab && <span class="sr-only"> (opens in a new tab)</span>}
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      onRequest.length > 0 && (
+        <div class="locked">
+          <h3 class="sr-only">Only on request</h3>
+          <ul class="contacts contacts--locked" id="locked">
+            {onRequest.map((name) => (
+              <li>
+                <span class="contacts__name">
+                  <Text value={name} />
+                </span>
+                <span class="contacts__value">
+                  <svg class="padlock" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M7.5 11 V8 a4.5 4.5 0 0 1 9 0 V11" />
+                    <rect x="4.5" y="11" width="15" height="10" rx="2.5" />
+                  </svg>
+                  Locked
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p class="locked__note">{ask ? <a href={ask}>Contact me</a> : 'Contact me'} for more information.</p>
+        </div>
+      )
+    }
+  </div>
+
+  <Terminal />
+</section>

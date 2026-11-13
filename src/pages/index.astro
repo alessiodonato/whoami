@@ -1,0 +1,135 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/scene.css';
+import '../styles/modes.css';
+
+import Clue from '../components/Clue.astro';
+import Coast from '../components/Coast.astro';
+import Glance from '../components/Glance.astro';
+import Intro from '../components/Intro.astro';
+import Pier from '../components/Pier.astro';
+import Sea from '../components/Sea.astro';
+import Sky from '../components/Sky.astro';
+import Stop from '../components/Stop.astro';
+import TodoBadge from '../components/TodoBadge.astro';
+import Walker from '../components/Walker.astro';
+import { journey, profile } from '../data/journey.ts';
+import { FONT_FILES, fontFaces } from '../lib/fonts.ts';
+import { pageGradient, skyAt } from '../lib/sky.ts';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const secrets = journey.filter((stop) => stop.type === 'secret');
+const firstSecret = journey.findIndex((stop) => stop.type === 'secret');
+
+const title = `${profile.name}, ${profile.role}: open source tools for AI agents`;
+const description = `${profile.headline} ${profile.intro.split('. ').slice(0, 2).join('. ')}.`;
+
+// The scene starts at dawn. These are the values the script then moves through the day.
+const dawn = skyAt(0);
+const skyVars = [
+  ...dawn.bands.map((color, i) => `--sky-${i + 1}:${color}`),
+  `--coast-far:${dawn.coastFar}`,
+  `--coast-near:${dawn.coastNear}`,
+  `--sea:${dawn.sea}`,
+  `--glint:${dawn.glint}`,
+  `--ground:${dawn.ground}`,
+  `--wall:${dawn.wall}`,
+  `--cloud-o:${dawn.cloud}`,
+  `--night:${dawn.night}`,
+  `--sun-x:${dawn.sunX}`,
+  `--sun-lift:${dawn.sunLift}`,
+  `--moon-x:${dawn.moonX}`,
+  `--moon-lift:${dawn.moonLift}`,
+  `--page-sky:${pageGradient()}`,
+  `--stops:${journey.length}`,
+].join(';');
+
+const headCss = `${fontFaces(base)}\n:root{${skyVars}}`;
+
+// Runs before first paint, so the right layout is there from the first frame:
+// "js" = scripts are on; "mode-h" / "mode-v" = the scripted walk, only when motion is welcome.
+// If the scripts never arrive, it falls back to the plain vertical page.
+const headScript = `(function(){var d=document.documentElement,c=d.classList;c.add('js');
+try{if(localStorage.getItem('fata-morgana')==='1')c.add('is-unlocked')}catch(e){}
+if(matchMedia('(prefers-reduced-motion: no-preference)').matches){
+c.add(matchMedia('(min-width: 768px) and (min-height: 560px)').matches?'mode-h':'mode-v');
+setTimeout(function(){if(!c.contains('is-ready'))c.remove('mode-h','mode-v')},5000)}})();`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#8f94cc" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    {FONT_FILES.map((file) => <link rel="preload" href={`${base}/fonts/${file}`} as="font" type="font/woff2" crossorigin />)}
+    <style is:inline set:html={headCss}></style>
+    <script is:inline set:html={headScript}></script>
+  </head>
+  <body>
+    <a class="skip" href="#pier">Skip to the contacts</a>
+
+    {/* Always in reach: whoever is hiring should not have to walk to the pier to find these two. */}
+    <nav class="quick" aria-label="Shortcuts">
+      <a href={`${base}/cv/`} target="_blank" rel="noopener">CV<span class="sr-only"> (opens in a new tab)</span></a>
+      <a href="#pier">Contacts</a>
+    </nav>
+
+    <main class="stage" id="stage">
+      <Sky />
+      <Coast stops={journey.length} />
+      <Sea stops={journey.length} />
+
+      <div class="track" id="track">
+        <Intro />
+        <Glance />
+
+        <ol class="stops" id="stops" aria-label="Stops along the walk. With the focus on a stop, the arrow keys move to the next one.">
+          {
+            journey.map((stop, i) => (
+              <>
+                {i === firstSecret && <Clue secrets={secrets.length} />}
+                <Stop stop={stop} />
+              </>
+            ))
+          }
+        </ol>
+
+        <Pier />
+      </div>
+
+      <Walker />
+    </main>
+
+    <dialog class="panel" id="panel" aria-labelledby="panel-title">
+      <div class="panel__body" id="panel-body"></div>
+      <form class="panel__foot" method="dialog">
+        <button class="panel__close" type="submit">Close</button>
+      </form>
+    </dialog>
+
+    <p class="notice" id="notice" role="status"></p>
+
+    {/* The haze that makes a mirage wobble. */}
+    <svg class="sr-only" width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="haze" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.09" numOctaves="1" seed="4" result="noise"></feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+      </filter>
+    </svg>
+
+    {import.meta.env.DEV && <TodoBadge />}
+
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>

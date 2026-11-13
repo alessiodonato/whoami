@@ -1,0 +1,30 @@
+---
+/** Only in `npm run dev`: the list of what is still a TODO in journey.ts. */
+import { findProblems, findTodos } from '../lib/todos.ts';
+
+const todos = findTodos();
+const problems = findProblems();
+---
+
+{
+  (todos.length > 0 || problems.length > 0) && (
+    <details class="todo-badge">
+      <summary>
+        {todos.length} TODO{problems.length > 0 && `, ${problems.length} mistakes`} in journey.ts
+      </summary>
+      <ul>
+        {problems.map((line) => (
+          <li>
+            <strong>Mistake:</strong> {line}
+          </li>
+        ))}
+        {todos.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+      <p>
+        <code>npm run build</code> stops until this list is empty.
+      </p>
+    </details>
+  )
+}

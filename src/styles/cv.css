@@ -1,0 +1,284 @@
+/*
+ * The one-page CV. Same inks and typefaces as the walk, none of the scenery:
+ * this page is for reading fast and for printing on one sheet of A4.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.cv {
+  margin: 0;
+  background: var(--moon);
+  color: var(--indigo);
+  font: 400 1rem / 1.5 var(--font-text);
+}
+
+/* :where keeps this reset weak, so the spacing set further down on single elements wins */
+.cv :where(h1, h2, h3, p, ul, dl, dd) {
+  margin: 0;
+}
+
+.cv .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cv a {
+  color: inherit;
+  text-decoration-color: var(--coral);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.cv a:hover {
+  text-decoration-thickness: 4px;
+}
+
+.cv :focus-visible {
+  outline: 3px solid var(--indigo);
+  outline-offset: 2px;
+  border-radius: 0.3rem;
+}
+
+/* the five bands of the dawn, as a strip along the top edge */
+.cv__sky {
+  height: 0.9rem;
+  background: linear-gradient(to right, #8f94cc 0 30%, #bfa5d0 30% 54%, #eba79c 54% 73%, #f8c9a4 73% 88%, #fce3c8 88% 100%);
+}
+
+.cv__bar,
+.cv__sheet {
+  max-width: 47rem;
+  margin: 0 auto;
+  padding-inline: clamp(1.1rem, 5vw, 2.5rem);
+}
+
+.cv__bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding-top: 1.1rem;
+  font-weight: 700;
+}
+
+.cv__bar button {
+  padding: 0.2rem 0.9rem;
+  background: var(--indigo);
+  color: var(--moon);
+  border: 0;
+  border-radius: 99px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cv__bar button:hover {
+  background: var(--violet-ink);
+}
+
+.cv__sheet {
+  padding-top: 1.6rem;
+  padding-bottom: 3rem;
+}
+
+.cv h1 {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-size: clamp(2.3rem, 1.4rem + 4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+}
+
+.cv__role {
+  margin-top: 0.35rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.cv__reach {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.4rem;
+  margin-top: 0.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.cv__summary {
+  margin-top: 1.2rem;
+  max-width: 40rem;
+  font-size: 1.1rem;
+  line-height: 1.45;
+}
+
+/* a section starts with a rule: it is what separates one kind of information from the next */
+.cv section {
+  margin-top: 1.7rem;
+  padding-top: 0.6rem;
+  border-top: 3px solid var(--indigo);
+}
+
+.cv h2 {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.cv__item {
+  margin-top: 0.8rem;
+}
+
+.cv__item p + p {
+  margin-top: 0.4rem;
+}
+
+.cv__item p a {
+  margin-left: 0.35em;
+}
+
+.cv__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1rem;
+}
+
+.cv h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.cv__lead {
+  font-weight: 600;
+}
+
+.cv__when {
+  color: var(--violet-ink);
+  font-weight: 700;
+}
+
+.cv__stack {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--violet-ink);
+}
+
+.cv__rows {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.7rem;
+}
+
+.cv__rows div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.cv__rows dt {
+  font-weight: 700;
+}
+
+.cv__locked {
+  margin-top: 1.7rem;
+  padding: 0.7rem 1rem;
+  border: 2px dashed var(--indigo);
+  border-radius: 0.6rem;
+  font-weight: 600;
+}
+
+@media (max-width: 30rem) {
+  .cv__rows div {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* on paper: one sheet of A4 */
+@page {
+  size: A4;
+  margin: 13mm 15mm;
+}
+
+@media print {
+  .cv {
+    background: #fff;
+    font-size: 9.4pt;
+    line-height: 1.38;
+  }
+
+  .cv__bar,
+  .cv__sky {
+    display: none;
+  }
+
+  .cv__sheet {
+    max-width: none;
+    padding: 0;
+  }
+
+  .cv h1 {
+    font-size: 25pt;
+  }
+
+  .cv__role {
+    font-size: 11pt;
+  }
+
+  .cv__summary {
+    margin-top: 9pt;
+    max-width: none;
+    font-size: 10pt;
+  }
+
+  .cv section {
+    margin-top: 11pt;
+    padding-top: 4pt;
+    border-top-width: 1.5pt;
+  }
+
+  .cv h2 {
+    font-size: 12pt;
+  }
+
+  .cv h3 {
+    font-size: 10pt;
+  }
+
+  .cv__item {
+    margin-top: 6pt;
+    break-inside: avoid;
+  }
+
+  .cv__item p + p {
+    margin-top: 3pt;
+  }
+
+  .cv__stack {
+    font-size: 8.6pt;
+  }
+
+  .cv__locked {
+    margin-top: 11pt;
+    padding: 5pt 8pt;
+    border-width: 1pt;
+  }
+}

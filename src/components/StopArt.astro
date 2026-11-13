@@ -1,0 +1,151 @@
+---
+/**
+ * The drawing that stands at a stop. All decorative: the words are on the plate.
+ * Lampposts share one frame (200 x 640, pole at x = 120, ground at the bottom edge),
+ * so a plate can be bolted to any of them at the same spot.
+ */
+import type { ArtKind } from '../lib/scene.ts';
+
+interface Props {
+  kind: ArtKind;
+}
+
+const { kind } = Astro.props;
+const lamp = kind.startsWith('lamp');
+const fork = kind === 'lamp-fork';
+---
+
+{
+  lamp && (
+    <svg class={`art art--lamp art--${kind}`} viewBox="0 0 200 640" aria-hidden="true" focusable="false">
+      <ellipse class="a-pool" cx={fork ? 120 : 84} cy="634" rx={fork ? 96 : 78} ry="6" />
+
+      {fork ? (
+        <>
+          <g class="a-glow">
+            <circle cx="76" cy="46" r="42" />
+            <circle cx="120" cy="46" r="42" />
+            <circle cx="164" cy="46" r="42" />
+          </g>
+          <path class="a-line" stroke-width="8" d="M120 636 V132" />
+          <path class="a-line" stroke-width="8" d="M76 68 V96 Q76 132 120 132 Q164 132 164 96 V68 M120 132 V68" />
+          <path class="a-ink" d="M66 60 h20 v9 h-20 z M110 60 h20 v9 h-20 z M154 60 h20 v9 h-20 z" />
+          <circle class="a-bulb" cx="76" cy="46" r="14" />
+          <circle class="a-bulb" cx="120" cy="46" r="14" />
+          <circle class="a-bulb" cx="164" cy="46" r="14" />
+        </>
+      ) : (
+        <>
+          <g class="a-glow">
+            <circle cx="64" cy="70" r="60" />
+            <circle cx="64" cy="70" r="36" />
+          </g>
+          <path class="a-line" stroke-width="8" d="M120 636 V98 Q120 34 76 34 H64 V46" />
+          <path class="a-ink" d="M45 44 h38 l-7 10 h-24 z" />
+          <circle class="a-bulb" cx="64" cy="70" r="17" />
+        </>
+      )}
+
+      <path class="a-ink" d="M106 636 v-36 q0 -9 9 -9 h10 q9 0 9 9 v36 z" />
+      <path class="a-hi" d="M117 586 V250" />
+
+      {kind === 'lamp-knot' && (
+        <g class="a-coral">
+          <path d="M120 452 q-34 -26 -40 0 q-2 20 40 4 z" />
+          <path d="M120 452 q34 -26 40 0 q2 20 -40 4 z" />
+          <path d="M116 458 l-16 40 l12 -6 l6 12 z" />
+          <path d="M124 458 l18 38 l-13 -4 l-4 13 z" />
+          <circle cx="120" cy="454" r="8" />
+        </g>
+      )}
+
+      {kind === 'lamp-cross' && (
+        <g>
+          <path class="a-line" stroke-width="5" d="M120 214 H96" />
+          <path class="a-cross" d="M52 186 h20 v18 h18 v20 h-18 v18 h-20 v-18 h-18 v-20 h18 z" />
+          <path class="a-cross-in" d="M57 191 h10 v18 h18 v10 h-18 v18 h-10 v-18 h-18 v-10 h18 z" />
+        </g>
+      )}
+
+      {kind === 'lamp-broom' && (
+        <g>
+          <path class="a-line" stroke-width="5" d="M112 388 L76 606" />
+          <path class="a-coral" d="M58 600 l34 6 l8 30 h-52 z" />
+          <path class="a-ink" d="M150 588 h34 l-4 48 h-26 z" />
+          <path class="a-ink" d="M146 578 h42 v8 h-42 z" />
+          <path class="a-hi" d="M160 596 v32 M174 596 v32" />
+        </g>
+      )}
+    </svg>
+  )
+}
+
+{
+  kind === 'sign' && (
+    <svg class="art art--bench" viewBox="0 0 220 110" aria-hidden="true" focusable="false">
+      <path class="a-line" stroke-width="7" d="M44 16 V70 M176 16 V70" />
+      <rect class="a-ink" x="26" y="14" width="168" height="10" rx="4" />
+      <rect class="a-ink" x="26" y="32" width="168" height="10" rx="4" />
+      <rect class="a-ink" x="18" y="60" width="184" height="12" rx="4" />
+      <path class="a-line" stroke-width="8" d="M38 72 V108 M182 72 V108" />
+      <path class="a-hi" d="M30 17 H190" />
+    </svg>
+  )
+}
+
+{
+  kind === 'mirage' && (
+    <svg class="art art--mirage" viewBox="0 0 160 150" aria-hidden="true" focusable="false">
+      <path class="a-line" stroke-width="5" d="M78 20 V112" />
+      <path class="a-moon" d="M84 24 L132 104 H84 Z" />
+      <path class="a-coral" d="M72 40 L34 104 H72 Z" />
+      <path class="a-ink" d="M22 112 H140 L126 136 H38 Z" />
+    </svg>
+  )
+}
+
+{
+  kind === 'mirage-wake' && (
+    <svg class="art art--mirage" viewBox="0 0 320 130" aria-hidden="true" focusable="false">
+      <path class="a-ink" d="M196 88 H312 L296 114 H208 Z" />
+      <path class="a-moon" d="M226 70 h44 l12 18 h-62 z" />
+      <path class="a-line" stroke-width="4" d="M214 88 V58" />
+      <path class="a-rope" d="M214 60 L96 66" />
+      <circle class="a-coral" cx="70" cy="34" r="9" />
+      <path class="a-line" stroke-width="7" d="M72 46 L62 76 L46 100 M62 76 L78 100 M70 54 L96 66" />
+      <path class="a-coral" d="M30 100 h64 q6 0 4 6 h-66 q-6 0 -2 -6 z" />
+      <path class="a-spray" d="M26 108 q-14 -14 -22 -6 M36 114 q-18 -6 -30 6 M100 112 q14 -10 26 0" />
+    </svg>
+  )
+}
+
+{
+  kind === 'mirage-barbell' && (
+    <svg class="art art--mirage" viewBox="0 0 260 110" aria-hidden="true" focusable="false">
+      <rect class="a-ink" x="6" y="50" width="248" height="10" rx="5" />
+      <rect class="a-coral" x="40" y="10" width="18" height="90" rx="6" />
+      <rect class="a-moon" x="62" y="24" width="14" height="62" rx="5" />
+      <rect class="a-ink" x="80" y="42" width="8" height="26" rx="3" />
+      <rect class="a-coral" x="202" y="10" width="18" height="90" rx="6" />
+      <rect class="a-moon" x="184" y="24" width="14" height="62" rx="5" />
+      <rect class="a-ink" x="172" y="42" width="8" height="26" rx="3" />
+    </svg>
+  )
+}
+
+{
+  kind === 'mirage-vinyl' && (
+    <svg class="art art--mirage art--vinyl" viewBox="0 0 150 150" aria-hidden="true" focusable="false">
+      <circle class="a-ink" cx="75" cy="75" r="70" />
+      <g class="a-groove">
+        <circle cx="75" cy="75" r="60" />
+        <circle cx="75" cy="75" r="51" />
+        <circle cx="75" cy="75" r="42" />
+        <circle cx="75" cy="75" r="33" />
+      </g>
+      <circle class="a-coral" cx="75" cy="75" r="23" />
+      <circle class="a-hole" cx="75" cy="75" r="4" />
+      <path class="a-hi" d="M30 44 A56 56 0 0 1 62 21" />
+    </svg>
+  )
+}

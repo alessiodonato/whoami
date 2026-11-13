@@ -1,0 +1,13 @@
+---
+/** Prints a value from journey.ts. In `npm run dev`, a value that is still a TODO is flagged on screen. */
+import { isTodo } from '../lib/todos.ts';
+
+interface Props {
+  value: string;
+}
+
+const { value } = Astro.props;
+const flag = import.meta.env.DEV && isTodo(value);
+---
+
+{flag ? <mark class="todo" title="Still a TODO in src/data/journey.ts">{value}</mark> : value}

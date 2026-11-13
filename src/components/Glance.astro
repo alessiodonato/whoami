@@ -1,0 +1,34 @@
+---
+/**
+ * The "In short" sign, right after the opening screen: what someone hiring
+ * looks for first, readable without walking the whole seafront.
+ */
+import { inShort } from '../data/journey.ts';
+import Text from './Text.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<section class="glance" id="in-short" aria-labelledby="in-short-title">
+  <div class="glance__plate" data-sign>
+    <h2 class="glance__title" id="in-short-title"><span data-title-text>In short</span></h2>
+    <dl class="glance__rows">
+      {
+        inShort.map((row) => (
+          <div>
+            <dt>
+              <Text value={row.name} />
+            </dt>
+            <dd>
+              <Text value={row.value} />
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="glance__links" data-sign-foot>
+      <a href={`${base}/cv/`} target="_blank" rel="noopener">One-page CV<span class="sr-only"> (opens in a new tab)</span></a>
+      <a href="#pier">Contacts</a>
+    </p>
+  </div>
+</section>

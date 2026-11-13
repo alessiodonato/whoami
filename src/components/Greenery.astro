@@ -1,0 +1,43 @@
+---
+/** Palms and oleanders along the promenade. Decorative. */
+import type { Greenery } from '../lib/scene.ts';
+
+interface Props {
+  kind: Greenery;
+}
+
+const { kind } = Astro.props;
+---
+
+{
+  (kind === 'palm' || kind === 'palm-tall') && (
+    <svg class={`green green--${kind}`} viewBox="0 0 200 360" aria-hidden="true" focusable="false">
+      <path class="a-line" stroke-width="11" d="M96 358 Q86 250 104 132" />
+      <g class="a-frond">
+        <path d="M104 132 Q150 84 194 112" />
+        <path d="M104 132 Q140 50 180 40" />
+        <path d="M104 132 Q104 60 120 14" />
+        <path d="M104 132 Q70 56 34 36" />
+        <path d="M104 132 Q56 88 10 108" />
+        <path d="M104 132 Q66 134 30 168" />
+        <path d="M104 132 Q146 132 176 170" />
+      </g>
+      <circle class="a-ink" cx="104" cy="134" r="10" />
+    </svg>
+  )
+}
+
+{
+  kind === 'oleander' && (
+    <svg class="green green--oleander" viewBox="0 0 200 110" aria-hidden="true" focusable="false">
+      <path class="a-bush" d="M10 110 Q4 70 34 62 Q38 30 72 34 Q92 8 122 30 Q158 22 164 58 Q196 66 190 110 Z" />
+      <g class="a-coral">
+        <circle cx="52" cy="62" r="6" />
+        <circle cx="96" cy="40" r="6" />
+        <circle cx="134" cy="56" r="6" />
+        <circle cx="78" cy="78" r="5" />
+        <circle cx="160" cy="84" r="5" />
+      </g>
+    </svg>
+  )
+}

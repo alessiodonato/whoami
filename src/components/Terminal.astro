@@ -1,0 +1,34 @@
+---
+/**
+ * The small terminal on the pier. It only repeats what is already on the page
+ * (and keeps one command to itself), so it stays hidden until the script is running.
+ */
+import { profile } from '../data/journey.ts';
+
+const whoami = [`${profile.name}, ${profile.role}. ${profile.place}.`, profile.intro.split('. ').slice(0, 2).join('. ') + '.'];
+---
+
+<div class="terminal" id="terminal" data-whoami={JSON.stringify(whoami)} hidden>
+  <p class="terminal__bar" aria-hidden="true">alessio@stretto</p>
+  <div class="terminal__log" id="terminal-log" role="log" aria-label="Terminal output" tabindex="0">
+    <p class="t-dim">Last stop. This terminal knows five commands and keeps a sixth to itself.</p>
+  </div>
+  <form class="terminal__form" id="terminal-form" autocomplete="off">
+    <label class="terminal__prompt" for="terminal-input">
+      <span aria-hidden="true">~ $</span><span class="sr-only">Terminal command</span>
+    </label>
+    <input
+      class="terminal__input"
+      id="terminal-input"
+      name="command"
+      type="text"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
+      enterkeyhint="send"
+      placeholder="help"
+      aria-describedby="terminal-tip"
+    />
+  </form>
+  <p class="terminal__tip" id="terminal-tip">Type <kbd>help</kbd> and press Enter.</p>
+</div>

@@ -1,0 +1,36 @@
+---
+/**
+ * The discreet clue, placed just before the first secret stop: a feluca
+ * (the swordfish boat of the Strait, with its absurd mast) and a small sign.
+ * Clicking the boat, or one command in the terminal, calls the Fata Morgana.
+ */
+interface Props {
+  secrets: number;
+}
+
+const { secrets } = Astro.props;
+---
+
+<li class="clue" id="clue" data-secrets={secrets}>
+  <button type="button" class="clue__boat" id="clue-boat" aria-describedby="clue-sign" disabled>
+    <span class="sr-only">The feluca, a swordfish boat. Its lookout is staring at something.</span>
+    <svg class="feluca" viewBox="0 0 340 330" aria-hidden="true" focusable="false">
+      <path class="feluca__rig" d="M150 44 L334 266 M150 44 L282 276 M150 44 L62 286 M150 110 L232 286"></path>
+      <path class="feluca__mast" d="M142 286 L147 44 M158 286 L153 44"></path>
+      <path class="feluca__web" d="M143 256 L157 226 L143 196 L156 166 L145 136 L155 106 L146 76 L153 52"></path>
+      <path class="feluca__nest" d="M136 30 h28 v13 h-28 z"></path>
+      <circle class="feluca__man" cx="150" cy="16" r="7"></circle>
+      <path class="feluca__bridge" d="M226 284 L334 266"></path>
+      <path class="feluca__rig" d="M240 272 L334 254 V266"></path>
+      <circle class="feluca__man" cx="326" cy="236" r="6"></circle>
+      <path class="feluca__mast" d="M326 243 V262"></path>
+      <path class="feluca__cabin" d="M104 266 h46 v20 h-46 z"></path>
+      <path class="feluca__hull" d="M56 286 H236 L218 314 H76 Z"></path>
+      <path class="feluca__stripe" d="M62 292 H232"></path>
+    </svg>
+  </button>
+  <p class="clue__sign" id="clue-sign">
+    <strong>Fata Morgana.</strong>
+    <span id="clue-text">Some evenings the Strait shows things that are not there. The crew of the feluca swears by it.</span>
+  </p>
+</li>
