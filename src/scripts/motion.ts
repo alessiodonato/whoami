@@ -17,7 +17,11 @@ import { goTo, isUnlocked, root, setGoer } from './nav.ts';
 gsap.registerPlugin(ScrollTrigger);
 
 const WIDE = '(min-width: 768px) and (min-height: 560px) and (prefers-reduced-motion: no-preference)';
-const NARROW = '(prefers-reduced-motion: no-preference) and ((max-width: 767.98px) or (max-height: 559.98px))';
+// "Narrow or low", written as a comma list on purpose: Safari before 16.4 does not know
+// the `or` keyword, throws the whole query away, and the walk would never start on those phones.
+const NARROW =
+  '(prefers-reduced-motion: no-preference) and (max-width: 767.98px), ' +
+  '(prefers-reduced-motion: no-preference) and (max-height: 559.98px)';
 
 const one = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector);
 const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
