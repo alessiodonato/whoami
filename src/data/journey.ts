@@ -41,6 +41,14 @@ export const profile = {
   name: 'Alessio Donato',
   role: 'AI Automation Engineer',
   place: 'Messina, on the Strait',
+  /**
+   * The title of the browser tab and of the result on Google. 60 characters at most:
+   * Google cuts what comes after.
+   */
+  tabTitle: 'Alessio Donato: AI Engineer for automation and AI agents',
+  /** The plain city and the two-letter country: never shown, they go in the data search engines read. */
+  city: 'Messina',
+  country: 'IT',
   headline: 'I taught robots to click. Now I teach AI agents to remember.',
   /**
    * The first sign of the walk. The first two sentences say what I do: they are also
@@ -52,7 +60,7 @@ export const profile = {
   carry: 'Watch what I pick up on the way.',
   /** The opening lines of the one-page CV (/cv/). */
   summary:
-    'AI Automation Engineer with six-plus years in RPA and hyperautomation: from software robots on enterprise systems to AI agents built on LLMs. On the side I build open source tools for AI coding agents.',
+    'AI Engineer with six-plus years in RPA and hyperautomation: from software robots on enterprise systems to AI agents built on LLMs. On the side I build open source tools for AI coding agents.',
 };
 
 /**

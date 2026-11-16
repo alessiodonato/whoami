@@ -7,6 +7,7 @@
 import '../styles/tokens.css';
 import '../styles/cv.css';
 
+import Seo from '../components/Seo.astro';
 import Text from '../components/Text.astro';
 import { contacts, inShort, journey, onRequest, profile } from '../data/journey.ts';
 import { FONT_FILES, fontFaces } from '../lib/fonts.ts';
@@ -42,10 +43,7 @@ const title = `${profile.name}, ${profile.role}: CV`;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={profile.summary} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={profile.summary} />
+    <Seo title={title} description={profile.summary} path="/cv/" />
     <meta name="theme-color" content="#8f94cc" />
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
     {FONT_FILES.map((file) => <link rel="preload" href={`${base}/fonts/${file}`} as="font" type="font/woff2" crossorigin />)}

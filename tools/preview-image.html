@@ -1,0 +1,216 @@
+<!doctype html>
+<!--
+  The picture shown when the link to the site is shared (public/preview.png, 1200 × 630).
+  It is not part of the site: it is only the drawing the picture is taken from.
+
+  The two lines of text (name and role, then the headline) are copied from `profile`
+  in src/data/journey.ts. If they change there, change them here too and take the picture again:
+  open this file in Chrome at 1200 × 630 and save a screenshot as public/preview.png.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Preview image</title>
+    <style>
+      @font-face {
+        font-family: Fraunces;
+        src: url(../public/fonts/fraunces-latin-soft.woff2) format('woff2');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'Atkinson Next';
+        src: url(../public/fonts/atkinson-next-latin.woff2) format('woff2');
+        font-weight: 200 800;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        color: #1b1f4b;
+      }
+      .card svg {
+        position: absolute;
+        inset: 0;
+      }
+      .who,
+      .headline {
+        position: absolute;
+        left: 64px;
+        margin: 0;
+      }
+      .who {
+        top: 50px;
+        font: 700 36px/1.3 'Atkinson Next', sans-serif;
+      }
+      .headline {
+        top: 112px;
+        width: 820px;
+        font: 900 72px/1.02 Fraunces, serif;
+        font-variation-settings: 'SOFT' 100;
+        letter-spacing: -0.012em;
+        text-wrap: balance;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <svg viewBox="0 0 1200 630" width="1200" height="630" aria-hidden="true">
+        <!-- the sky at dawn: the five bands the walk starts from -->
+        <rect width="1200" height="122" fill="rgb(143 148 204)" />
+        <rect y="122" width="1200" height="98" fill="rgb(191 165 208)" />
+        <rect y="220" width="1200" height="84" fill="rgb(235 167 156)" />
+        <rect y="304" width="1200" height="64" fill="rgb(248 201 164)" />
+        <rect y="368" width="1200" height="52" fill="rgb(252 227 200)" />
+
+        <!-- clouds -->
+        <g fill="#f5f1e8" opacity="0.55">
+          <g transform="translate(1004 30) scale(0.56)">
+            <rect x="0" y="30" width="320" height="30" rx="15" />
+            <rect x="70" y="8" width="170" height="32" rx="16" />
+            <rect x="190" y="0" width="80" height="26" rx="13" />
+          </g>
+          <g transform="translate(852 164) scale(0.6)">
+            <rect x="0" y="24" width="200" height="28" rx="14" />
+            <rect x="40" y="0" width="104" height="32" rx="16" />
+          </g>
+        </g>
+
+        <!-- the sun, coming up behind Calabria -->
+        <circle cx="876" cy="350" r="104" fill="#f5f1e8" opacity="0.16" />
+        <circle cx="876" cy="350" r="76" fill="#f5f1e8" opacity="0.3" />
+        <circle cx="876" cy="350" r="54" fill="#f5f1e8" />
+
+        <!-- Calabria across the water -->
+        <path
+          fill="rgb(180 154 198)"
+          d="M0 412 L0 396 L70 372 L150 398 L250 366 L340 392 L450 362 L540 388 L650 360 L760 348 L890 326 L960 352 L1040 336 L1120 360 L1200 344 L1200 412 Z"
+        />
+        <path
+          fill="rgb(122 95 166)"
+          d="M0 412 L0 400 L52 384 L112 402 L188 388 L262 404 L352 384 L430 402 L520 380 L600 400 L690 376 L770 398 L852 372 L940 396 L1022 378 L1106 398 L1200 380 L1200 412 Z"
+        />
+
+        <!-- the Strait -->
+        <rect y="410" width="1200" height="118" fill="rgb(142 154 210)" />
+        <g fill="rgb(248 201 164)">
+          <rect x="96" y="424" width="64" height="3" rx="1.5" />
+          <rect x="278" y="420" width="38" height="3" rx="1.5" />
+          <rect x="356" y="438" width="92" height="3.4" rx="1.7" />
+          <rect x="498" y="426" width="46" height="3" rx="1.5" />
+          <rect x="716" y="424" width="58" height="3" rx="1.5" />
+          <rect x="690" y="436" width="110" height="3.4" rx="1.7" />
+          <rect x="726" y="450" width="74" height="3.6" rx="1.8" />
+          <rect x="842" y="432" width="52" height="3" rx="1.5" />
+          <rect x="1086" y="428" width="70" height="3" rx="1.5" />
+          <rect x="146" y="456" width="84" height="3.8" rx="1.9" />
+          <rect x="430" y="466" width="120" height="4" rx="2" />
+          <rect x="640" y="468" width="96" height="4" rx="2" />
+          <rect x="884" y="458" width="76" height="3.8" rx="1.9" />
+          <rect x="1090" y="462" width="88" height="4" rx="2" />
+          <rect x="250" y="484" width="110" height="4.4" rx="2.2" />
+          <rect x="560" y="490" width="80" height="4.4" rx="2.2" />
+          <rect x="780" y="486" width="130" height="4.4" rx="2.2" />
+        </g>
+
+        <!-- a ferry on its way across -->
+        <g transform="translate(516 420) scale(0.33)">
+          <path fill="#f0623f" d="M104 4 h20 v24 h-20 z" />
+          <path fill="#f5f1e8" d="M150 14 h44 v14 h-44 z M40 28 h178 v20 h-178 z" />
+          <path
+            fill="#3d8bd4"
+            d="M52 34 h10 v7 h-10 z M70 34 h10 v7 h-10 z M88 34 h10 v7 h-10 z M106 34 h10 v7 h-10 z M124 34 h10 v7 h-10 z M142 34 h10 v7 h-10 z M160 34 h10 v7 h-10 z M178 34 h10 v7 h-10 z M196 34 h10 v7 h-10 z"
+          />
+          <path fill="#1b1f4b" d="M4 48 H256 L240 74 H22 Z" />
+        </g>
+
+        <!-- the promenade: pavement and sea wall -->
+        <rect y="528" width="1200" height="102" fill="rgb(240 220 208)" />
+        <rect y="528" width="1200" height="16" fill="rgb(216 191 196)" />
+        <g fill="#1b1f4b" opacity="0.13">
+          <rect x="94" y="544" width="2.4" height="86" />
+          <rect x="214" y="544" width="2.4" height="86" />
+          <rect x="334" y="544" width="2.4" height="86" />
+          <rect x="454" y="544" width="2.4" height="86" />
+          <rect x="574" y="544" width="2.4" height="86" />
+          <rect x="694" y="544" width="2.4" height="86" />
+          <rect x="814" y="544" width="2.4" height="86" />
+          <rect x="934" y="544" width="2.4" height="86" />
+          <rect x="1054" y="544" width="2.4" height="86" />
+          <rect x="1174" y="544" width="2.4" height="86" />
+        </g>
+
+        <!-- il Pilone di Torre Faro -->
+        <g transform="translate(968 92) scale(0.7)" fill="none" stroke="#1b1f4b" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke-width="5" d="M22 640 L68 96 M138 640 L92 96 M68 96 H92 M72 96 L78 30 M88 96 L82 30 M78 30 H82 M80 30 V4" />
+          <path stroke-width="4" d="M22 110 H138 M30 110 L68 96 M130 110 L92 96 M38 150 H122 M46 150 L66 126 M114 150 L94 126" />
+          <path
+            stroke-width="2.2"
+            d="M64 150 L98 196 M96 150 L62 196 M62 196 H98 M60 196 L102 262 M100 196 L58 262 M56 262 H104 M54 262 L108 344 M106 262 L52 344 M48 344 H112 M46 344 L116 440 M114 344 L44 440 M40 440 H120 M38 440 L124 540 M122 440 L36 540 M30 540 H130 M30 540 L134 640 M130 540 L26 640"
+          />
+          <circle cx="80" cy="6" r="5" fill="#f0623f" stroke="none" />
+        </g>
+
+        <!-- the railing, in front of the water and of the pylon's feet -->
+        <g fill="#1b1f4b">
+          <rect y="504" width="1200" height="4" />
+          <rect y="518" width="1200" height="2" />
+          <rect x="22" y="504" width="4" height="24" />
+          <rect x="70" y="504" width="4" height="24" />
+          <rect x="118" y="504" width="4" height="24" />
+          <rect x="166" y="504" width="4" height="24" />
+          <rect x="214" y="504" width="4" height="24" />
+          <rect x="262" y="504" width="4" height="24" />
+          <rect x="310" y="504" width="4" height="24" />
+          <rect x="358" y="504" width="4" height="24" />
+          <rect x="406" y="504" width="4" height="24" />
+          <rect x="454" y="504" width="4" height="24" />
+          <rect x="502" y="504" width="4" height="24" />
+          <rect x="550" y="504" width="4" height="24" />
+          <rect x="598" y="504" width="4" height="24" />
+          <rect x="646" y="504" width="4" height="24" />
+          <rect x="694" y="504" width="4" height="24" />
+          <rect x="742" y="504" width="4" height="24" />
+          <rect x="790" y="504" width="4" height="24" />
+          <rect x="838" y="504" width="4" height="24" />
+          <rect x="886" y="504" width="4" height="24" />
+          <rect x="934" y="504" width="4" height="24" />
+          <rect x="982" y="504" width="4" height="24" />
+          <rect x="1030" y="504" width="4" height="24" />
+          <rect x="1078" y="504" width="4" height="24" />
+          <rect x="1126" y="504" width="4" height="24" />
+          <rect x="1174" y="504" width="4" height="24" />
+        </g>
+
+        <!-- the little man, mid-step -->
+        <g transform="translate(120 496) scale(0.92)" stroke-linecap="round" stroke-linejoin="round">
+          <g transform="rotate(20 32 46)" fill="none" stroke="#c94a2c" stroke-width="6">
+            <path d="M32 46 V62 V76" />
+          </g>
+          <g transform="rotate(18 32 78)" fill="none" stroke="#1b1f4b" stroke-width="7">
+            <path d="M32 78 V100 V121 h9" />
+          </g>
+          <path fill="#f0623f" d="M21 46 Q21 34 32 34 Q43 34 43 46 L43 82 H21 Z" />
+          <g transform="rotate(-18 32 78)" fill="none" stroke="#1b1f4b" stroke-width="7">
+            <path d="M32 78 V100 V121 h9" />
+          </g>
+          <g transform="rotate(-20 32 46)" fill="none" stroke="#c94a2c" stroke-width="6">
+            <path d="M32 46 V62 V76" />
+          </g>
+          <circle cx="32" cy="20" r="11" fill="#f8c9a4" stroke="#1b1f4b" stroke-width="3" />
+          <path
+            fill="#1b1f4b"
+            d="M20 25 Q17.5 6.5 32 6.5 Q41 6.5 45.5 11.5 Q46.5 14.5 43 17 Q38.5 12.5 32.5 14 Q26.5 15.5 25.5 22 Q25 25.5 22.5 27 Z"
+          />
+        </g>
+      </svg>
+
+      <p class="who">Alessio Donato, AI Automation Engineer</p>
+      <p class="headline">I taught robots to click. Now I teach AI agents to remember.</p>
+    </div>
+  </body>
+</html>

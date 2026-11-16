@@ -10,6 +10,7 @@ import Glance from '../components/Glance.astro';
 import Intro from '../components/Intro.astro';
 import Pier from '../components/Pier.astro';
 import Sea from '../components/Sea.astro';
+import Seo from '../components/Seo.astro';
 import Sky from '../components/Sky.astro';
 import Stop from '../components/Stop.astro';
 import TodoBadge from '../components/TodoBadge.astro';
@@ -23,7 +24,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const secrets = journey.filter((stop) => stop.type === 'secret');
 const firstSecret = journey.findIndex((stop) => stop.type === 'secret');
 
-const title = `${profile.name}, ${profile.role}: open source tools for AI agents`;
 const description = `${profile.headline} ${profile.intro.split('. ').slice(0, 2).join('. ')}.`;
 
 // The scene starts at dawn. These are the values the script then moves through the day.
@@ -63,11 +63,7 @@ setTimeout(function(){if(!c.contains('is-ready'))c.remove('mode-h','mode-v')},50
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <Seo title={profile.tabTitle} description={description} path="/" />
     <meta name="theme-color" content="#8f94cc" />
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
     {FONT_FILES.map((file) => <link rel="preload" href={`${base}/fonts/${file}`} as="font" type="font/woff2" crossorigin />)}

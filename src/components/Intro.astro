@@ -8,10 +8,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <header class="intro" id="top">
   <div class="intro__text">
-    <p class="intro__who">
-      <Text value={profile.name} />, <Text value={profile.role} />. <Text value={profile.place} />.
-    </p>
-    <h1 class="intro__title"><Text value={profile.headline} /></h1>
+    {/* One heading, two lines: who is walking (what a search engine looks for in a heading), then the headline. */}
+    <h1 class="intro__heading">
+      <span class="intro__who"><Text value={profile.name} />, <Text value={profile.role} />. <Text value={profile.place} />.</span>
+      {' '}
+      <span class="intro__title"><Text value={profile.headline} /></span>
+    </h1>
     <p class="intro__cue intro__cue--top">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 V19 M5 13 L12 20 L19 13"></path></svg>
       Scroll to walk

@@ -179,8 +179,18 @@ code {
   line-height: 1.35;
 }
 
+/* Both lines sit inside the one <h1>: each is a block of its own, and the first
+   goes back to the text face instead of taking the heading's. */
+.intro__who,
+.intro__title {
+  display: block;
+}
+
 .intro__who {
   margin-bottom: 0.8rem;
+  font-family: var(--font-text);
+  font-variation-settings: normal;
+  text-wrap: wrap;
 }
 
 .intro__title {
